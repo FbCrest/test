@@ -1,0 +1,33 @@
+{
+  "cancel": "Cancel",
+  "undo": "Undo",
+  "undoWithShortcut": "Undo (Ctrl+Z)",
+  "redo": "Redo",
+  "redoWithShortcut": "Redo (Ctrl+Y or Ctrl+Shift+Z)",
+  "reset": "Reset",
+  "resetWithShortcut": "Reset to saved state",
+  "resetToDefaults": "Reset to Defaults",
+  "save": "Save",
+  "saveDisabled": "No changes to save",
+  "saveWithShortcut": "Save (Ctrl+S)",
+  "close": "Close",
+  "on": "On",
+  "off": "Off",
+  "note": "Note",
+  "recentVideos": "Recent Videos",
+  "clearAll": "Clear All",
+  "confirm": "Confirm",
+  "jumpToCheckpoint": "Jump to last checkpoint (undo multiple steps)",
+  "jumpToCheckpointWithShortcut": "Jump to last checkpoint (Ctrl+J)",
+  "toast": {
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info",
+    "loading": "Loading",
+    "confirm": "Confirm"
+  },
+  "toastHistory": "Toast history",
+  "showToastHistory": "Show toast history",
+  "hideToastHistory": "Hide toast history"
+}

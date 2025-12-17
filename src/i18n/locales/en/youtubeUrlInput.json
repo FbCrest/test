@@ -1,0 +1,8 @@
+{
+  "placeholder": "Enter YouTube URL (e.g., youtube.com/watch?v=...)",
+  "examplesTitle": "Supported URL formats:",
+  "example1": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "example2": "https://youtu.be/dQw4w9WgXcQ",
+  "example3": "youtube.com/watch?v=dQw4w9WgXcQ",
+  "videoId": "Video ID:"
+}

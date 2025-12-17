@@ -1,0 +1,21 @@
+{
+  "title": "Split Subtitles",
+  "sliderTitle": "Maximum words per subtitle",
+  "description": "Smart subtitle splitting (subtitles already smaller than the limit will not be affected)",
+  "descriptionRange": "Smart subtitle splitting in selected range (subtitles already smaller than the limit will not be affected)",
+  "limitLabel": "Limit: {{count}} {{unit}}",
+  "wordUnit": "word",
+  "wordsUnit": "words",
+  "apply": "Apply",
+  "exampleTitle": "Examples:",
+  "example1": {
+    "split": "Split into 3-3 (not 5-1)",
+    "timing": "Timings: 50%-50%"
+  },
+  "example2": {
+  },
+  "example3": {
+  },
+  "example4": {
+  }
+}
