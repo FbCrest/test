@@ -1,0 +1,381 @@
+/* App.css - Main application styling */
+
+/* Material Design 3 content layout container - consistent spacing */
+.content-layout-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 24px; /* Consistent spacing between elements */
+  margin-bottom: 2rem;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-primary);
+  transition: background-color var(--transition-speed);
+}
+
+.app-main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem 1.5rem 1.5rem; /* Remove top padding, keep others */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Material Design 3 container with enhanced styling */
+.app-content {
+  background-color: var(--md-surface-1);
+  border-radius: var(--card-border-radius);
+  padding: 32px;
+  box-shadow: var(--md-elevation-level3);
+  transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+  border: 1px solid var(--md-outline-variant);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add subtle background pattern for more visual interest */
+.app-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--md-primary), transparent 92%) 0%, transparent 50%);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin: 1.5rem 0;
+}
+
+/* Material Design 3 button container - improved layout */
+.buttons-container {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  /* Removed margin-bottom as spacing is handled by parent container */
+}
+
+/* Ensure all text inside buttons-container buttons uses the title font */
+.buttons-container button *:not(.material-symbols-rounded),
+.buttons-container button span:not(.material-symbols-rounded),
+.buttons-container .processing-text-container,
+.buttons-container .processing-text,
+.buttons-container .processing-dots {
+  font-family: var(--font-title) !important;
+}
+
+/* Adjust SRT upload button in buttons container */
+.buttons-container .srt-upload-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.buttons-container .srt-upload-button {
+  height: 52px; /* Match the height of other buttons */
+}
+
+/* Material Design 3 button styles */
+.buttons-container .generate-btn,
+.buttons-container .retry-gemini-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border: none;
+  border-radius: var(--button-border-radius);
+  font-size: var(--md-label-large-size);
+  line-height: var(--md-label-large-height);
+  font-weight: var(--md-label-large-weight);
+  font-family: var(--font-title);
+  cursor: pointer;
+  transition: box-shadow var(--md-duration-medium2) var(--md-easing-standard),
+              background-color var(--md-duration-medium2) var(--md-easing-standard),
+              transform var(--md-duration-medium2) var(--md-easing-emphasized);
+  box-shadow: var(--md-elevation-level2);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.buttons-container .generate-btn {
+  flex: 1;
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  /* Pill-shaped button for Material Design 3 look */
+  padding: 16px 28px;
+  font-size: calc(var(--md-label-large-size) + 1px);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: var(--md-elevation-level2);
+  border-radius: var(--md-shape-pill);
+  height: 52px; /* Fixed height for consistency */
+  white-space: normal; /* Allow text wrapping */
+  text-align: center; /* Center the wrapped text */
+}
+
+.buttons-container .retry-gemini-btn {
+  background-color: var(--md-tertiary);
+  color: var(--md-on-tertiary);
+  /* Pill-shaped button for Material Design 3 look */
+  padding: 16px 24px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: var(--md-elevation-level2);
+  border-radius: var(--md-shape-pill);
+  height: 52px; /* Fixed height for consistency */
+}
+
+.buttons-container .force-stop-btn {
+  background-color: var(--md-error);
+  color: var(--md-on-error);
+  /* Pill-shaped button for Material Design 3 look */
+  padding: 16px 24px;
+  font-size: var(--md-label-large-size);
+  line-height: var(--md-label-large-height);
+  font-weight: var(--md-label-large-weight);
+  font-family: var(--font-title);
+  letter-spacing: 0.5px;
+  box-shadow: var(--md-elevation-level2);
+  border-radius: var(--md-shape-pill);
+  height: 52px; /* Fixed height for consistency */
+  /* margin-left removed to allow button to appear properly on its own */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  z-index: 1;
+  transition: box-shadow var(--md-duration-medium2) var(--md-easing-standard),
+              background-color var(--md-duration-medium2) var(--md-easing-standard),
+              transform var(--md-duration-medium2) var(--md-easing-emphasized);
+}
+
+/* State layer for hover effect */
+.buttons-container .generate-btn::before,
+.buttons-container .retry-gemini-btn::before,
+.buttons-container .force-stop-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  transition: background-color var(--md-duration-medium2) var(--md-easing-standard);
+  pointer-events: none;
+}
+
+.buttons-container .generate-btn:hover::before,
+.buttons-container .retry-gemini-btn:hover::before,
+.buttons-container .force-stop-btn:hover::before {
+  background-color: transparent !important;
+}
+
+.buttons-container .generate-btn:active::before,
+.buttons-container .retry-gemini-btn:active::before,
+.buttons-container .force-stop-btn:active::before {
+  background-color: rgba(255, 255, 255, var(--md-state-pressed-opacity));
+}
+
+.buttons-container .generate-btn:hover,
+.buttons-container .retry-gemini-btn:hover,
+.buttons-container .force-stop-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md-elevation-level3);
+  background-color: transparent !important;
+}
+
+.buttons-container .generate-btn:hover {
+  color: var(--md-primary); /* Use primary color for text on hover for better readability */
+  text-shadow: none; /* Remove text shadow on hover */
+}
+
+.buttons-container .retry-gemini-btn:hover {
+  color: var(--md-tertiary); /* Use tertiary color for text on hover for better readability */
+  text-shadow: none; /* Remove text shadow on hover */
+}
+
+.buttons-container .force-stop-btn:hover {
+  color: var(--md-error); /* Use error color for text on hover for better readability */
+  text-shadow: none; /* Remove text shadow on hover */
+}
+
+.buttons-container .generate-btn:active,
+.buttons-container .retry-gemini-btn:active,
+.buttons-container .force-stop-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-level1);
+}
+
+.buttons-container .generate-btn:disabled,
+.buttons-container .retry-gemini-btn:disabled,
+.buttons-container .force-stop-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.buttons-container .generate-btn svg,
+.buttons-container .retry-gemini-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: transform var(--md-duration-medium3) var(--md-easing-emphasized);
+}
+
+.buttons-container .generate-btn:hover svg {
+  transform: translateY(-2px);
+}
+
+.buttons-container .retry-gemini-btn:hover svg {
+  transform: rotate(180deg);
+}
+
+/* Pulse animation removed to prevent dizziness */
+
+/* Removed app-title class to avoid conflicts */
+
+@media (max-width: 640px) {
+  .buttons-container {
+    flex-direction: column;
+  }
+
+  .buttons-container .generate-btn,
+  .buttons-container .retry-gemini-btn,
+  .buttons-container .force-stop-btn {
+    width: 100%;
+  }
+
+  .buttons-container .force-stop-btn {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+
+/* Cancel download button - styled like other buttons */
+.buttons-container .cancel-download-btn {
+  background-color: var(--md-error);
+  color: var(--md-on-error);
+  /* Pill-shaped button for Material Design 3 look */
+  padding: 16px 24px;
+  font-size: var(--md-label-large-size);
+  line-height: var(--md-label-large-height);
+  font-weight: var(--md-label-large-weight);
+  font-family: var(--font-title);
+  letter-spacing: 0.5px;
+  box-shadow: var(--md-elevation-level2);
+  border-radius: var(--md-shape-pill);
+  height: 52px; /* Fixed height for consistency */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  z-index: 1;
+  transition: box-shadow var(--md-duration-medium2) var(--md-easing-standard),
+              background-color var(--md-duration-medium2) var(--md-easing-standard),
+              transform var(--md-duration-medium2) var(--md-easing-emphasized);
+}
+
+/* State layer for hover effect */
+.buttons-container .cancel-download-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  transition: background-color var(--md-duration-medium2) var(--md-easing-standard);
+  pointer-events: none;
+}
+
+.buttons-container .cancel-download-btn:hover::before {
+  background-color: rgba(255, 255, 255, var(--md-state-hover-opacity));
+}
+
+.buttons-container .cancel-download-btn:active::before {
+  background-color: rgba(255, 255, 255, var(--md-state-pressed-opacity));
+}
+
+.buttons-container .cancel-download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md-elevation-level3);
+}
+
+.buttons-container .cancel-download-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-level1);
+}
+
+.buttons-container .cancel-download-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.buttons-container .cancel-download-btn svg:not(.gemini-mini-icon svg) {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: transform var(--md-duration-medium3) var(--md-easing-emphasized);
+  z-index: 1; /* Ensure the X icon stays above the Gemini icons */
+}
+
+.buttons-container .cancel-download-btn:hover svg:not(.gemini-mini-icon svg) {
+  transform: rotate(90deg);
+}
+
+/* Gemini mini icons in the cancel button */
+.buttons-container .cancel-download-btn .gemini-icon-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+/* Enhance the gemini icon container on hover for interactive effect */
+.buttons-container .cancel-download-btn:hover .gemini-icon-container {
+  opacity: 0.25;
+}
+
+.buttons-container .cancel-download-btn .gemini-mini-icon {
+  position: absolute;
+  opacity: 0.5;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Interactive effects for the mini icons */
+.buttons-container .cancel-download-btn:hover .gemini-mini-icon {
+  opacity: 0.8;
+}
+
+/* Cancel download button Gemini effects now handled by dynamic particle system */

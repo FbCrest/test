@@ -1,0 +1,402 @@
+/* GeminiButtonAnimations.css - Advanced animations for Gemini buttons */
+
+/* Base styles for Gemini icon container - for all Gemini buttons */
+.generate-btn .gemini-icon-container,
+.retry-gemini-btn .gemini-icon-container,
+.force-stop-btn .gemini-icon-container,
+.srt-upload-button .gemini-icon-container,
+.add-subtitles-button .gemini-icon-container,
+.video-analysis-button .gemini-icon-container,
+.lets-go-btn .gemini-icon-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 0; /* Keep star layer beneath actual button content */
+}
+
+/* Ensure visible icons (Material Symbols and SVGs) sit above star layer for all Gemini buttons */
+.generate-btn .material-symbols-rounded,
+.retry-gemini-btn .material-symbols-rounded,
+.force-stop-btn .material-symbols-rounded,
+.srt-upload-button .material-symbols-rounded,
+.add-subtitles-button .material-symbols-rounded,
+.video-analysis-button .material-symbols-rounded,
+.lets-go-btn .material-symbols-rounded {
+  position: relative;
+  z-index: 2;
+}
+
+.generate-btn svg,
+.retry-gemini-btn svg,
+.force-stop-btn svg,
+.srt-upload-button svg,
+.add-subtitles-button svg,
+.video-analysis-button svg,
+.lets-go-btn svg {
+  position: relative;
+  z-index: 2;
+}
+
+/* Gemini mini icons - these will be positioned around the button */
+.gemini-mini-icon {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  pointer-events: none;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  /* Removed drop-shadow filter that could cause blue square effect */
+  transition: transform 0.3s var(--md-easing-standard), opacity 0.3s var(--md-easing-standard);
+}
+
+/* All icons are now dynamic - managed by particle system */
+.gemini-mini-icon.dynamic {
+  opacity: 0;
+  z-index: 2;
+}
+
+/* Special styling for different particle types */
+.gemini-mini-icon.pulse {
+  /* No filter, box-shadow, or background to prevent blue square effect */
+  filter: none !important;
+  box-shadow: none !important;
+  background: none !important;
+  transition: opacity 0.2s var(--md-easing-emphasized);
+}
+
+/* Allow SVG filters for star-like glow effects */
+.gemini-mini-icon.pulse svg,
+.gemini-mini-icon.pulse svg path,
+.gemini-mini-icon.dynamic svg,
+.gemini-mini-icon.dynamic svg path {
+  /* Allow SVG filters but prevent CSS filters */
+  box-shadow: none !important;
+  -webkit-filter: none !important;
+  /* Add a subtle animation */
+  animation: star-twinkle 3s infinite alternate ease-in-out;
+}
+
+@keyframes star-twinkle {
+  0% { opacity: 0.9; }
+  100% { opacity: 1; }
+}
+
+.gemini-mini-icon.trail {
+  /* No filter, box-shadow, or background to prevent blue square effect */
+  filter: none !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+
+.gemini-mini-icon.trail-particle {
+  /* No filter, box-shadow, or background to prevent blue square effect */
+  filter: none !important;
+  box-shadow: none !important;
+  background: none !important;
+  transition: transform 0.1s linear, opacity 0.1s linear;
+}
+
+/* Particle connections for constellation effect */
+.gemini-particle-connection {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.6), transparent);
+  height: 2px;
+  transform-origin: 0 0;
+  transition: opacity 0.3s var(--md-easing-emphasized);
+  z-index: 1;
+  border-radius: 1px;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+}
+
+/* Different sizes for variety */
+.gemini-mini-icon.size-xs { width: 8px; height: 8px; }
+.gemini-mini-icon.size-sm { width: 12px; height: 12px; }
+.gemini-mini-icon.size-md { width: 16px; height: 16px; }
+.gemini-mini-icon.size-lg { width: 20px; height: 20px; }
+
+/* All positioning now handled dynamically by particle system */
+
+/* Random positions - now handled dynamically by particle system */
+
+/* Animation keyframes for the mini icons - expanded with more variations */
+@keyframes float-up {
+  0% { transform: translateY(10px); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translateY(-15px); opacity: 0; }
+}
+
+@keyframes float-down {
+  0% { transform: translateY(-10px); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translateY(15px); opacity: 0; }
+}
+
+@keyframes float-left {
+  0% { transform: translateX(10px); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translateX(-15px); opacity: 0; }
+}
+
+@keyframes float-right {
+  0% { transform: translateX(-10px); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translateX(15px); opacity: 0; }
+}
+
+@keyframes float-diagonal-1 {
+  0% { transform: translate(5px, 5px); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translate(-10px, -10px); opacity: 0; }
+}
+
+@keyframes float-diagonal-2 {
+  0% { transform: translate(-5px, 5px); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translate(10px, -10px); opacity: 0; }
+}
+
+@keyframes float-diagonal-3 {
+  0% { transform: translate(5px, -5px); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translate(-10px, 10px); opacity: 0; }
+}
+
+@keyframes float-diagonal-4 {
+  0% { transform: translate(-5px, -5px); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translate(10px, 10px); opacity: 0; }
+}
+
+@keyframes pulse-fade {
+  0% { transform: scale(1); opacity: 0; }
+  50% { transform: scale(1); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+@keyframes pulse-fade-rotate {
+  0% { transform: rotate(0deg); opacity: 0; }
+  50% { transform: rotate(180deg); opacity: 0.3; }
+  100% { transform: rotate(360deg); opacity: 0; }
+}
+
+@keyframes rotate-fade-cw {
+  0% { transform: rotate(0deg); opacity: 0; }
+  50% { transform: rotate(180deg); opacity: 0.3; }
+  100% { transform: rotate(360deg); opacity: 0; }
+}
+
+@keyframes rotate-fade-ccw {
+  0% { transform: rotate(0deg); opacity: 0; }
+  50% { transform: rotate(-180deg); opacity: 0.3; }
+  100% { transform: rotate(-360deg); opacity: 0; }
+}
+
+@keyframes swing {
+  0% { transform: rotate(0deg); opacity: 0; }
+  25% { transform: rotate(15deg); opacity: 0.7; }
+  50% { transform: rotate(0deg); opacity: 0.8; }
+  75% { transform: rotate(-15deg); opacity: 0.7; }
+  100% { transform: rotate(0deg); opacity: 0; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0; }
+  40% { transform: translateY(-10px) scale(1.1); opacity: 0.7; }
+  60% { transform: translateY(-5px) scale(1.05); opacity: 0.6; }
+  80% { transform: translateY(-8px) scale(1.08); opacity: 0.5; }
+}
+
+/* All animations now handled by dynamic particle system */
+
+/* Special processing state - show all particles */
+.generate-btn.processing .gemini-mini-icon,
+.retry-gemini-btn.processing .gemini-mini-icon,
+.add-subtitles-button.processing .gemini-mini-icon,
+.video-analysis-button.processing .gemini-mini-icon {
+  opacity: 0.8 !important;
+  transition: opacity 0.3s var(--md-easing-emphasized);
+}
+
+/* Add glow effect to buttons when processing */
+.generate-btn.processing,
+.retry-gemini-btn.processing,
+.force-stop-btn.processing,
+.srt-upload-button.processing,
+.add-subtitles-button.processing,
+.video-analysis-button.processing {
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(to right, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+}
+
+.generate-btn.processing::after,
+.retry-gemini-btn.processing::after,
+.force-stop-btn.processing::after,
+.srt-upload-button.processing::after,
+.add-subtitles-button.processing::after,
+.video-analysis-button.processing::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  animation: pulse-glow 2s var(--md-easing-emphasized) infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes pulse-glow {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* All processing animations now handled by dynamic particle system */
+
+/* Hover state enhancements */
+.generate-btn:hover .gemini-icon-container,
+.retry-gemini-btn:hover .gemini-icon-container,
+.srt-upload-button:hover .gemini-icon-container,
+.add-subtitles-button:hover .gemini-icon-container,
+.video-analysis-button:hover .gemini-icon-container,
+.lets-go-btn:hover .gemini-icon-container {
+  --cursor-x: 50%;
+  --cursor-y: 50%;
+  background: transparent !important; /* Ensure transparent background to expose stars */
+}
+
+/* Enhance star visibility and glow on hover */
+.generate-btn:hover .gemini-mini-icon svg,
+.retry-gemini-btn:hover .gemini-mini-icon svg,
+.srt-upload-button:hover .gemini-mini-icon svg,
+.add-subtitles-button:hover .gemini-mini-icon svg,
+.video-analysis-button:hover .gemini-mini-icon svg,
+.lets-go-btn:hover .gemini-mini-icon svg {
+  transform: scale(1.2);
+  transition: transform 0.3s ease-out;
+  animation: hover-star-twinkle 1.5s infinite alternate ease-in-out !important;
+}
+
+/* Keep generate button stars small but allow XS/SM variations via size classes */
+.generate-btn .gemini-mini-icon.size-xs { width: 8px !important; height: 8px !important; }
+.generate-btn .gemini-mini-icon.size-sm { width: 12px !important; height: 12px !important; }
+.generate-btn:hover .gemini-mini-icon svg { transform: none !important; }
+
+@keyframes hover-star-twinkle {
+  0% { opacity: 0.9; }
+  50% { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+/* Cursor-reactive animations - removed in favor of physics-based interactions */
+/* This is now handled by the JavaScript physics engine */
+
+/* Special animation for the cursor-following icon - removed in favor of physics-based interactions */
+/* This is now handled by the JavaScript physics engine */
+
+/* Different colors for the icons based on button type */
+.generate-btn .gemini-mini-icon {
+  stroke: var(--md-on-primary);
+}
+
+.retry-gemini-btn .gemini-mini-icon {
+  stroke: var(--md-on-tertiary);
+}
+
+.srt-upload-button .gemini-mini-icon {
+  stroke: var(--md-on-secondary);
+}
+
+.add-subtitles-button .gemini-mini-icon {
+  stroke: var(--md-on-tertiary);
+}
+
+.lets-go-btn .gemini-mini-icon {
+  stroke: var(--md-on-primary);
+}
+
+/* Translate and Download button icons styling removed to reduce lag */
+
+/* Change icon colors on hover to match text */
+.generate-btn:hover .gemini-mini-icon {
+  stroke: var(--md-primary);
+}
+
+.retry-gemini-btn:hover .gemini-mini-icon {
+  stroke: var(--md-tertiary);
+}
+
+.srt-upload-button:hover .gemini-mini-icon {
+  stroke: var(--md-secondary);
+}
+
+/* Translate and Download button hover styling removed to reduce lag */
+
+/* Add gradient effects to the icons */
+.generate-btn .gemini-mini-icon svg path,
+.retry-gemini-btn .gemini-mini-icon svg path,
+.force-stop-btn .gemini-mini-icon svg path,
+.srt-upload-button .gemini-mini-icon svg path,
+.add-subtitles-button .gemini-mini-icon svg path,
+.video-analysis-button .gemini-mini-icon svg path {
+  /* Removed stroke-dasharray and stroke-dashoffset */
+  transition: opacity 0.3s var(--md-easing-emphasized);
+}
+
+.generate-btn:hover .gemini-mini-icon svg path,
+.retry-gemini-btn:hover .gemini-mini-icon svg path,
+.force-stop-btn:hover .gemini-mini-icon svg path,
+.add-subtitles-button:hover .gemini-mini-icon svg path,
+.video-analysis-button:hover .gemini-mini-icon svg path {
+  /* Removed stroke-dashoffset animation */
+  opacity: 1;
+}
+
+/* Processing state special effects */
+.generate-btn.processing .gemini-mini-icon svg path,
+.retry-gemini-btn.processing .gemini-mini-icon svg path,
+.force-stop-btn.processing .gemini-mini-icon svg path,
+.add-subtitles-button.processing .gemini-mini-icon svg path,
+.video-analysis-button.processing .gemini-mini-icon svg path {
+  /* Removed dash animation */
+  opacity: 0.9;
+}
+
+/* Removed dash-animation keyframes */
+
+/* Disabled state - only show animations when processing */
+.generate-btn:disabled:not(.processing) .gemini-icon-container,
+.retry-gemini-btn:disabled:not(.processing) .gemini-icon-container,
+.add-subtitles-button:disabled:not(.processing) .gemini-icon-container,
+.video-analysis-button:disabled:not(.processing) .gemini-icon-container {
+  display: none;
+}
+
+/* Ensure animations work even when button is disabled but processing */
+.generate-btn:disabled.processing .gemini-icon-container,
+.retry-gemini-btn:disabled.processing .gemini-icon-container,
+.add-subtitles-button:disabled.processing .gemini-icon-container,
+.video-analysis-button:disabled.processing .gemini-icon-container {
+  display: block;
+  opacity: 0.8; /* Slightly dimmed to indicate disabled state */
+}

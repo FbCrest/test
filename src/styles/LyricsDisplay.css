@@ -1,0 +1,14 @@
+/* LyricsDisplay.css */
+/* Main file that imports all modular CSS files */
+
+/* Import modular CSS files */
+@import './lyrics/base.css';
+@import './lyrics/layout.css';
+@import './lyrics/controls.css';
+@import './lyrics/timeline.css';
+@import './lyrics/lyric-items.css';
+@import './lyrics/between-lyrics.css';
+@import './lyrics/animations.css';
+@import './lyrics/download-help.css';
+@import './lyrics/save-message.css';
+@import './lyrics/volume-visualizer.css';

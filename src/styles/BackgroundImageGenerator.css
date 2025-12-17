@@ -1,0 +1,12 @@
+/* Main BackgroundImageGenerator CSS file */
+/* Imports all modular CSS files */
+
+@import './background-generator/container.css';
+@import './background-generator/header.css';
+@import './background-generator/layout.css';
+@import './background-generator/form-inputs.css';
+@import './background-generator/album-art.css';
+@import './background-generator/image-preview.css';
+@import './background-generator/buttons.css';
+@import './background-generator/animations.css';
+@import './background-generator/media-queries.css';

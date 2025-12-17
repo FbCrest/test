@@ -1,0 +1,517 @@
+/* Video Rendering Section Styles - Material Design 3 */
+/* Based on background-generator/container.css */
+
+
+
+.video-rendering-section.collapsed,
+.music-generator-section.collapsed {
+  max-height: 128px; /* Small enough to show just the header and collapsed content */
+  transition: max-height var(--md-duration-medium4) var(--md-easing-emphasized);
+}
+
+.video-rendering-section.dragging {
+  border-color: var(--md-primary);
+  box-shadow: 0 0 0 3px rgba(var(--md-primary-rgb), 0.2);
+}
+
+/* Drag overlay */
+.drag-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(var(--md-primary-rgb), 0.1);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.drag-content {
+  text-align: center;
+  color: var(--md-primary);
+}
+
+.drag-content svg {
+  margin-bottom: 16px;
+}
+
+.drag-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.drag-content h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Header - matching background-generator-header */
+.video-rendering-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background-color: var(--md-surface-2);
+  color: var(--md-on-surface);
+  box-shadow: var(--md-elevation-level1);
+  position: relative;
+  z-index: 1;
+  border-radius: 24px;
+}
+
+
+
+.video-rendering-header .header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.video-rendering-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--text-color);
+}
+
+/* Only apply border radius to the bottom when expanded */
+.video-rendering-section:not(.collapsed) .video-rendering-header {
+  border-radius: 24px 24px 0 0;
+  transition: border-radius var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+.video-rendering-section.collapsed .video-rendering-header {
+  transition: border-radius var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+/* Collapsed content */
+.video-rendering-collapsed-content,
+.music-generator-collapsed-content {
+  background-color: var(--md-surface-1);
+  border-radius: 0 0 24px 24px;
+  animation: slideUp var(--md-duration-medium3) var(--md-easing-emphasized-decelerate);
+  transform-origin: top center;
+}
+
+.helper-message {
+  padding: 16px;
+  border-radius: 16px;
+  color: var(--md-on-surface);
+  font-size: 0.95rem;
+  margin: 0;
+  text-align: center;
+  animation: slideUp var(--md-duration-medium3) var(--md-easing-emphasized-decelerate);
+}
+
+/* Layout rows - matching translation section pattern */
+.input-selection-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Three equal columns */
+  gap: 16px;
+}
+
+.preview-customization-row {
+  display: flex;
+  height: 600px;
+  margin-bottom: 20px;
+  border: 1px solid var(--md-outline-variant);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+/* Compact sections - without excessive card styling */
+.video-input-compact,
+.subtitle-selection-compact,
+.narration-selection-compact {
+  padding: 0 1.5rem 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0; /* Allow grid items to shrink below their content size */
+  overflow: hidden; /* Prevent content from expanding the container */
+}
+
+.video-input-compact h4,
+.subtitle-selection-compact h4,
+.narration-selection-compact h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Help icon styling for video rendering section */
+.video-rendering-section .help-icon-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  position: relative;
+  vertical-align: middle;
+}
+
+.video-rendering-section .help-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--md-on-surface-variant);
+  opacity: 0.7;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.video-rendering-section .help-icon-container:hover .help-icon {
+  opacity: 1;
+  color: var(--md-primary);
+}
+
+/* Compact volume control - matches the compact section layout */
+.compact-volume-control {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin: 1rem 0 1rem 0;
+}
+
+.volume-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.compact-volume-control .volume-slider {
+  width: 200px;
+  flex: none;
+}
+
+/* StandardSlider in volume controls should match subtitle-selection-compact layout */
+.compact-volume-control .standard-slider-container {
+  width: 100% !important; /* Match subtitle-selection-compact full width */
+  max-width: 350px !important; /* Maximum width to match compact sections */
+  flex: none;
+}
+
+/* Customization panel - matches video panel height */
+.customization-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: var(--md-surface-1);
+  overflow: hidden;
+}
+
+/* Row layout for consistent alignment - matching translation section */
+.rendering-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 42px; /* Match the height of input elements */
+  margin-bottom: 1.25rem;
+}
+
+/* Queue row - full width without label */
+.rendering-row.queue-row {
+  display: block; /* Remove flex layout */
+  gap: 0;
+  min-height: auto;
+}
+
+/* Label column */
+.row-label {
+  flex: 0 0 120px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.row-label label {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+/* Content column */
+.row-content {
+  flex: 1;
+  min-width: 0; /* Prevent flex items from overflowing */
+  display: flex;
+  align-items: center;
+}
+
+/* Action content alignment */
+.action-content {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-start;
+}
+
+/* Video Input */
+.video-input-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.selected-video-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--md-surface-1);
+  border-radius: 24px;
+  border: 1px solid var(--md-outline-variant);
+  min-width: 0; /* Allow flex container to shrink */
+  width: 100%; /* Take full width of parent container */
+}
+
+.selected-video-info-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.selected-video-info-row.top-row {
+  flex: 1; /* Allow top row to take available space */
+}
+
+.selected-video-info-row.bottom-row {
+  justify-content: space-between; /* Space out source indicator and button */
+}
+
+.video-file-icon {
+  color: var(--md-primary);
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  align-self: flex-start; /* Align icon to top when text is multi-line */
+  margin-top: 2px; /* Small adjustment to align with first line of text */
+}
+
+.video-name {
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0; /* Allow flex item to shrink below its content size */
+  word-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.4;
+  /* Allow multi-line display with proper spacing */
+}
+
+.video-source-indicator {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  background: var(--md-surface-3);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+
+
+
+
+
+
+/* Render controls */
+.render-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+/* Progress display */
+.render-progress {
+  margin-bottom: 16px;
+}
+
+.render-progress {
+  width: 100%;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--md-surface-variant);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--md-primary);
+  transition: width var(--md-duration-medium3) var(--md-easing-emphasized);
+  border-radius: 12px;
+  width: 0%; /* Start at 0 */
+}
+
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.progress-status {
+  flex: 1;
+}
+
+.progress-percentage {
+  font-weight: 600;
+  color: var(--md-primary);
+  min-width: 40px;
+  text-align: right;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+
+/* Video results */
+.rendered-video-section video {
+  border-radius: 12px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.video-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Animations - matching background-generator exactly */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes expandContent {
+  from {
+    opacity: 0.7;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .video-rendering-section,
+  .music-generator-section {
+    margin: 20px 16px 40px 16px;
+  }
+
+  /* Stack input selection row vertically on mobile */
+  .input-selection-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Stack preview and customization vertically on mobile */
+  .preview-customization-row {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .customization-panel {
+    flex: none !important;
+    height: 400px;
+  }
+
+  /* Stack rendering rows vertically on mobile */
+  .rendering-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .row-label {
+    flex: none;
+    width: 100%;
+    text-align: left;
+    justify-content: flex-start;
+    margin-bottom: 0.25rem;
+  }
+
+  .row-content {
+    width: 100%;
+  }
+
+  /* Radio groups already use block display, no changes needed for mobile */
+
+
+
+  .render-controls {
+    flex-direction: column;
+  }
+
+  .selected-video-info {
+    gap: 8px; /* Reduce gap on mobile */
+  }
+
+  .selected-video-info-row.bottom-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .video-actions {
+    justify-content: stretch;
+  }
+
+  .video-actions .pill-button {
+    flex: 1;
+  }
+
+  .upload-drop-zone {
+    padding: 2rem;
+    min-height: 150px;
+  }
+}

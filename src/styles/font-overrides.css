@@ -1,0 +1,60 @@
+/* Font overrides to ensure Google Sans and Google Sans are used throughout the application */
+
+/* Apply Google Sans to all elements by default */
+*:not(.font-name):not(.font-flags):not(.font-preview-text):not(.font-sample):not(.font-details):not(.font-selector-preview):not(.font-info):not(textarea):not(.preset-full-text):not(.masked-input):not(.required-variable):not(.time-control):not(.pill-button) {
+  font-family: var(--font-primary);
+}
+
+/* Specific overrides for components that might have their own font settings */
+.MuiTypography-root,
+.MuiButton-root,
+.MuiInputBase-root,
+.MuiFormLabel-root,
+.MuiMenuItem-root,
+.MuiListItemText-root,
+.MuiChip-root,
+.MuiTab-root,
+.MuiAlert-root,
+.MuiTooltip-root,
+.MuiSnackbarContent-root,
+.MuiDialogTitle-root,
+.MuiDialogContent-root,
+.MuiDialogContentText-root,
+.MuiDialogActions-root {
+  font-family: var(--font-primary) !important;
+}
+
+/* Preserve title fonts */
+h1, h2, h3, h4, h5, h6,
+.MuiTypography-h1,
+.MuiTypography-h2,
+.MuiTypography-h3,
+.MuiTypography-h4,
+.MuiTypography-h5,
+.MuiTypography-h6,
+.buttons-container button,
+.buttons-container .gemini-icon-container,
+.buttons-container .processing-text-container,
+.buttons-container .processing-text {
+  font-family: var(--font-title);
+}
+
+/* Preserve code fonts */
+code, pre,
+.MuiTypography-code,
+.code-block,
+.code-inline {
+  font-family: var(--font-code);
+}
+
+/* Allow font previews to show their actual fonts */
+.font-modal,
+.font-dropdown-menu,
+.font-selector-button {
+  font-family: initial !important;
+}
+
+/* Ensure pill buttons use primary font */
+.pill-button {
+  font-family: var(--font-primary);
+}

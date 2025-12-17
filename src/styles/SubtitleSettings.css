@@ -1,0 +1,5 @@
+/* SubtitleSettings.css */
+/* Main file that imports all modular CSS files */
+
+/* Import modular CSS files */
+@import './subtitle-settings/index.css';

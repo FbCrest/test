@@ -1,0 +1,244 @@
+/* Overlay sits above app content but below onboarding overlay z-index */
+.onboarding-reveal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999; /* Below onboarding overlay (100000), above app */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  animation: onboarding-fade-in 0.4s var(--md-easing-emphasized) forwards;
+  user-select: none; /* Disable text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Starry background canvas */
+.onboarding-starry-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Disable pointer events - we'll handle this in JS */
+  z-index: 1; /* Behind the card content */
+  opacity: 1; /* Full opacity for maximum visibility */
+  transition: opacity 0.3s ease;
+}
+
+/* Dismissal animation for overlay */
+.onboarding-reveal-overlay.dismissing {
+  animation: onboarding-fade-out 0.5s var(--md-easing-emphasized) forwards;
+}
+
+/* Glassy card container - fullscreen */
+.onboarding-reveal-card {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  box-shadow: none;
+  border: none;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: onboarding-card-slide-in 0.5s var(--md-easing-emphasized) forwards;
+  position: relative;
+  z-index: 2; /* Above the starry background */
+}
+
+/* Dismissal animation for card */
+.onboarding-reveal-card.dismissing {
+  animation: onboarding-card-slide-out 0.5s var(--md-easing-emphasized) forwards;
+}
+.onboarding-reveal-header {
+  /* Remove header since we're centering everything */
+  display: none;
+}
+
+.onboarding-reveal-body {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Center the controls and Let's go button */
+.onboarding-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2; /* Above the starry canvas to ensure buttons are clickable */
+  pointer-events: auto; /* Ensure buttons receive click events */
+}
+
+/* Adjust sizes to align heights */
+.settings-footer-controls.controls-large .theme-toggle {
+  width: 40px; /* smaller to match language button height */
+  height: 40px;
+  font-size: 18px;
+}
+
+/* Language button already ~40px tall via LanguageSelector.css; ensure harmony */
+.language-selector-container .language-selector-button {
+  height: 40px;
+  border-radius: 9999px;
+}
+
+/* Let's go button styled like srt-upload-button */
+.onboarding-controls-row .lets-go-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  height: 40px;
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  border: none;
+  border-radius: var(--md-shape-pill);
+  font-size: var(--md-label-large-size);
+  line-height: var(--md-label-large-height);
+  font-weight: var(--md-label-large-weight);
+  font-family: var(--font-title);
+  cursor: pointer;
+  transition: box-shadow var(--md-duration-medium2) var(--md-easing-standard),
+              background-color var(--md-duration-medium2) var(--md-easing-standard),
+              transform var(--md-duration-medium2) var(--md-easing-emphasized);
+  box-shadow: var(--md-elevation-level2);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Arrow icon styling */
+.onboarding-controls-row .lets-go-btn .lets-go-arrow {
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+  transition: transform var(--md-duration-medium2) var(--md-easing-emphasized);
+  flex-shrink: 0;
+}
+
+/* Text styling */
+.onboarding-controls-row .lets-go-btn .lets-go-text {
+  z-index: 2;
+  position: relative;
+}
+
+/* Make controls big and comfortable */
+.settings-footer-controls.controls-large.split-layout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.settings-footer-controls.controls-large.split-layout .controls-left {
+  display: flex;
+  justify-content: flex-start;
+}
+.settings-footer-controls.controls-large.split-layout .controls-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.onboarding-reveal-footer {
+  display: flex;
+  justify-content: center;
+  padding: 12px 20px 20px 20px;
+}
+
+/* Hover and active states for Let's go button */
+.onboarding-controls-row .lets-go-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md-elevation-level3);
+  background-color: transparent !important;
+  color: var(--md-primary);
+  text-shadow: none;
+}
+
+/* Arrow animation on hover */
+.onboarding-controls-row .lets-go-btn:hover .lets-go-arrow {
+  transform: translateX(4px);
+}
+
+.onboarding-controls-row .lets-go-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-level1);
+}
+
+.onboarding-controls-row .lets-go-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Keyframe animations for smooth entrance and dismissal */
+@keyframes onboarding-fade-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+@keyframes onboarding-fade-out {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+
+@keyframes onboarding-card-slide-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+    backdrop-filter: blur(0px) saturate(100%);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    backdrop-filter: blur(18px) saturate(120%);
+  }
+}
+
+@keyframes onboarding-card-slide-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    backdrop-filter: blur(18px) saturate(120%);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-30px);
+    backdrop-filter: blur(0px) saturate(100%);
+  }
+}
+
+@media (max-width: 600px) {
+  .settings-footer-controls.controls-large.split-layout {
+    grid-template-columns: 1fr;
+  }
+  .settings-footer-controls.controls-large.split-layout .controls-left,
+  .settings-footer-controls.controls-large.split-layout .controls-right {
+    justify-content: center;
+  }
+}
+

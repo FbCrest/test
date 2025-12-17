@@ -1,0 +1,324 @@
+/* Material Symbols Rounded - centralized tuning (modifiable in one place) */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,GRAD@24,600,0&display=block');
+
+:root {
+  /* Material Symbols tuning (change these values to retune all icons) */
+  --ms-font-family: 'Material Symbols Rounded', 'Material Symbols', 'Material Icons';
+  --ms-wght: 600; /* weight axis */
+  --ms-grad: 0;   /* grade axis */
+  --ms-opsz: 24;  /* optical size axis */
+
+  /* default icon size (can be overridden per-element) */
+  --ms-size-default: 20px;
+}
+
+/* Use this class for all Material Symbols icons */
+.material-symbols-rounded {
+  font-family: var(--ms-font-family) !important;
+  font-variation-settings: "wght" var(--ms-wght), "GRAD" var(--ms-grad), "opsz" var(--ms-opsz);
+  font-weight: var(--ms-wght);
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+/* Avoid showing ligature text before Material Symbols font is ready */
+html:not(.ms-font-ready) .material-symbols-rounded { visibility: hidden; }
+
+/* Import local fonts first */
+@import url('./local-fonts.css');
+
+/* Keep other Google Fonts that we don't have locally */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans:wght@400;500;700&family=Noto+Serif:wght@400;700&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Gothic+Coding&family=Nanum+Myeongjo:wght@400;700&family=Gowun+Dodum&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap');
+/* Vietnamese fonts (except Be Vietnam Pro which is replaced by Google Sans) */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Montserrat+Alternates:wght@400;500;600&family=Sarabun:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Vietnamese:wght@400;500;600&display=swap');
+@import url('./material-tokens.css');
+@import url('./components/custom-slider.css');
+@import url('./album-art-fix.css');
+@import url('./floating-scrollbar.css');
+@import url('./font-overrides.css');
+@import url('./components/LiquidGlass.css');
+
+@import url('./components/form-controls.css');
+
+/* index.css - Global styles for the application */
+
+:root {
+  /* Map existing variables to Material Design 3 tokens */
+  --primary-color: var(--md-primary);
+  --primary-color-light: color-mix(in srgb, var(--md-primary), transparent 90%);
+  --secondary-color: var(--md-secondary);
+  --accent-color: var(--md-tertiary);
+  --background-primary: var(--md-surface);
+  --background-secondary: var(--md-surface-1);
+  --background-tertiary: var(--md-surface-2);
+  --text-primary: var(--md-on-surface);
+  --text-secondary: var(--md-on-surface-variant);
+  --text-muted: var(--md-outline);
+  --border-color: var(--md-outline-variant);
+  --shadow-color: rgba(var(--md-shadow-rgb), 0.08);
+  --success-color: #2e7d32; /* Material success color */
+  --warning-color: #ed6c02; /* Material warning color */
+  --error-color: var(--md-error);
+  --info-color: #1976d2; /* Dedicated info blue */
+  --success-background: color-mix(in srgb, #2e7d32, transparent 90%);
+  --warning-background: color-mix(in srgb, #ed6c02, transparent 90%);
+  --error-background: color-mix(in srgb, var(--md-error), transparent 90%);
+  --info-background: color-mix(in srgb, #1976d2, transparent 90%);
+  --transition-speed: var(--md-duration-medium2);
+  --theme-lightness: 60%;
+
+  /* Font variables */
+  --font-primary: 'Google Sans', 'Open Sans', sans-serif;
+  --font-title: 'Google Sans', 'Be Vietnam Pro', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+
+  /* Headline tuning (Google Sans Flex) */
+  --headline-wght: 700; /* maps to wght via font-weight */
+  --headline-grad: 0;   /* non-standard axis, uses font-variation-settings */
+  --headline-rond: 100; /* non-standard axis, uses font-variation-settings */
+
+  /* Additional Material Design 3 mappings */
+  --button-border-radius: var(--md-shape-small);
+  --card-border-radius: var(--md-shape-medium);
+  --modal-border-radius: var(--md-shape-large);
+  --standard-easing: var(--md-easing-standard);
+  --emphasized-easing: var(--md-easing-emphasized);
+
+  /* Material Design 3 state layer opacities */
+  --md-state-hover-opacity: 8%;
+  --md-state-focus-opacity: 12%;
+  --md-state-pressed-opacity: 12%;
+  --md-state-dragged-opacity: 16%;
+
+  /* RGB values for shadow effects and transparency */
+  --md-primary-rgb: 103, 80, 164; /* Purple 600 */
+  --md-tertiary-rgb: 0, 110, 144; /* Teal 700 */
+  --md-surface-rgb: 255, 251, 254; /* Light mode surface */
+  --md-surface-1-rgb: 248, 242, 249; /* Light mode surface 1 */
+  --md-outline-variant-rgb: 121, 116, 126; /* Light mode outline variant */
+  --md-shadow-rgb: 0, 0, 0; /* For shadow color consistency */
+}
+
+/* Dark theme variables are now handled by Material Design 3 tokens */
+[data-theme="dark"] {
+  --shadow-color: rgba(var(--md-shadow-rgb), 0.25);
+  --theme-lightness: 40%;
+
+  /* Headline tweak for dark mode: slightly higher grade for legibility */
+  --headline-grad: 25;
+
+  /* Success and warning colors for dark theme */
+  --success-color: #66bb6a; /* Material success color for dark theme */
+  --warning-color: #ffa726; /* Material warning color for dark theme */
+  --info-color: #64b5f6; /* Lighter info blue for dark theme */
+  --success-background: color-mix(in srgb, #66bb6a, transparent 90%);
+  --warning-background: color-mix(in srgb, #ffa726, transparent 90%);
+  --info-background: color-mix(in srgb, #64b5f6, transparent 90%);
+
+  /* Dark mode RGB values */
+  --md-surface-rgb: 28, 27, 31; /* Dark mode surface */
+  --md-surface-1-rgb: 36, 35, 39; /* Dark mode surface 1 */
+  --md-outline-variant-rgb: 73, 69, 79; /* Dark mode outline variant */
+}
+
+/* Material Design 3 typography */
+body {
+  margin: 0;
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  font-size: var(--md-body-medium-size);
+  line-height: var(--md-body-medium-height);
+  font-weight: var(--md-body-medium-weight);
+  letter-spacing: 0.25px;
+}
+
+code {
+  font-family: var(--font-code);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  color: var(--text-primary);
+  font-family: var(--font-title);
+  font-weight: var(--headline-wght);
+  font-optical-sizing: auto; /* let browser pick opsz based on size */
+  /* Non-standard axes only (standards-first approach) */
+  font-variation-settings: "GRAD" var(--headline-grad), "ROND" var(--headline-rond);
+}
+
+/* Utility classes to tweak roundness on demand */
+.title-round-0 {
+  font-variation-settings: "GRAD" var(--headline-grad), "ROND" 0;
+}
+.title-round-50 {
+  font-variation-settings: "GRAD" var(--headline-grad), "ROND" 50;
+}
+.title-round-100 {
+  font-variation-settings: "GRAD" var(--headline-grad), "ROND" 100;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+input, select, textarea {
+  font-family: var(--font-primary);
+  transition: border-color var(--transition-speed), background-color var(--transition-speed);
+}
+
+/* Using Material Design 3 animations from material-tokens.css */
+/* These are kept for backward compatibility */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.6; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+@keyframes modal-appear {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Common utility classes */
+.hidden {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-1 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-2 {
+  margin-bottom: 1rem;
+}
+
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 2rem;
+}
+
+
+/* Text balancing utility and global application */
+.text-balance {
+  text-wrap: balance;
+  -webkit-text-wrap: balance;
+}
+
+/* Apply text balancing to all row labels across the app */
+.row-label {
+  text-wrap: balance;
+  -webkit-text-wrap: balance;
+}
+
+/* Fallback for browsers without text-wrap: balance */
+@supports not (text-wrap: balance) {
+  .text-balance,
+  .row-label {
+    word-break: break-word;
+    hyphens: manual;
+  }
+}
+
+/* Animation utility classes - updated to use Material Design 3 tokens */
+.fade-in {
+  animation: fadeIn var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+.slide-in {
+  animation: slideIn var(--md-duration-medium4) var(--md-easing-emphasized-decelerate);
+}
+
+.slide-in-up {
+  animation: slideInUp var(--md-duration-medium3) var(--md-easing-emphasized-decelerate);
+}
+
+.pulse {
+  animation: pulse var(--md-duration-long4) var(--md-easing-standard) infinite;
+}
+
+.spin {
+  animation: spin var(--md-duration-long2) linear infinite !important;
+}
+
+.shake {
+  animation: shake var(--md-duration-medium4) var(--md-easing-emphasized);
+}
+
+.modal-appear {
+  animation: modal-appear var(--md-duration-medium3) var(--md-easing-emphasized-decelerate);
+}
+
+/* Material Design 3 animation classes */
+.md-fade-in {
+  animation: fadeIn var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+.md-slide-in {
+  animation: slideIn var(--md-duration-medium4) var(--md-easing-emphasized-decelerate);
+}
+
+.md-slide-up {
+  animation: slideInUp var(--md-duration-medium3) var(--md-easing-emphasized-decelerate);
+}
+/* Status messages removed - now using centralized toast component */
+
+

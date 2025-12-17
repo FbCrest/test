@@ -1,0 +1,261 @@
+/* Button group container */
+.srt-upload-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px; /* Match the height of the buttons */
+}
+
+.srt-upload-button-container {
+  position: relative;
+  display: inline-block;
+}
+
+.srt-upload-button-container.drag-over .srt-upload-button {
+  border: 2px dashed var(--md-primary);
+  background-color: rgba(var(--md-primary-rgb, 103, 80, 164), 0.1);
+  transform: scale(1.02);
+  box-shadow: var(--md-elevation-level4);
+}
+
+.srt-upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: var(--md-secondary);
+  color: var(--md-on-secondary);
+  border: none;
+  border-radius: var(--md-shape-pill);
+  font-size: var(--md-label-large-size);
+  line-height: var(--md-label-large-height);
+  font-weight: var(--md-label-large-weight);
+  font-family: var(--font-title);
+  cursor: pointer;
+  transition: box-shadow var(--md-duration-medium2) var(--md-easing-standard),
+              background-color var(--md-duration-medium2) var(--md-easing-standard),
+              transform var(--md-duration-medium2) var(--md-easing-emphasized);
+  box-shadow: var(--md-elevation-level2);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  height: 52px; /* Match the height of other buttons */
+}
+
+/* Ensure all text inside the button uses the title font, but do not override Material Symbols */
+.srt-upload-button *:not(.material-symbols-rounded),
+.srt-upload-button span:not(.material-symbols-rounded) {
+  font-family: var(--font-title) !important;
+}
+
+/* State layer for hover effect */
+.srt-upload-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  transition: background-color var(--md-duration-medium2) var(--md-easing-standard);
+  pointer-events: none;
+}
+
+.srt-upload-button:hover::before {
+  background-color: transparent !important;
+}
+
+.srt-upload-button:active::before {
+  background-color: rgba(255, 255, 255, var(--md-state-pressed-opacity));
+}
+
+.srt-upload-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md-elevation-level3);
+  background-color: transparent !important;
+  color: var(--md-secondary); /* Use secondary color for text on hover for better readability */
+  text-shadow: none; /* Remove any text shadow on hover */
+}
+
+.srt-upload-button:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-level1);
+}
+
+.srt-upload-button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Has SRT uploaded state */
+.srt-upload-button.has-srt-uploaded {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+}
+
+.srt-upload-button.has-srt-uploaded:hover {
+  background-color: transparent !important;
+  color: var(--md-primary); /* Use primary color for text on hover for better readability */
+  text-shadow: none; /* Remove text shadow on hover */
+}
+
+/* Style when in the buttons-container */
+.buttons-container .srt-upload-buttons-group {
+  margin: 0 10px 0 0;
+  display: flex;
+  align-items: center;
+  height: 52px; /* Match the height of other buttons in the container */
+}
+
+.buttons-container .srt-upload-button {
+  height: 40px;
+  margin: 0;
+  background-color: var(--md-secondary);
+  color: var(--md-on-secondary);
+  border: none;
+  box-shadow: var(--md-elevation-level2); /* Ensure consistent shadow with other buttons */
+}
+
+.buttons-container .srt-upload-button.has-srt-uploaded {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+}
+
+.buttons-container .srt-upload-button:hover {
+  background-color: transparent !important;
+  color: var(--md-secondary); /* Use secondary color for text on hover for better readability */
+  text-shadow: none; /* Remove text shadow on hover */
+  box-shadow: var(--md-elevation-level3); /* Updated to match other buttons */
+  transform: translateY(-2px); /* Updated to match other buttons */
+}
+
+.buttons-container .srt-upload-button.has-srt-uploaded:hover {
+  background-color: transparent !important;
+  color: var(--md-primary); /* Use primary color for text on hover for better readability */
+  text-shadow: none; /* Remove text shadow on hover */
+}
+
+.buttons-container .srt-upload-button:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-level1);
+}
+
+/* Clear button in buttons-container */
+.buttons-container .clear-subtitles-button {
+  height: 34px;
+  width: 34px;
+}
+
+.clear-subtitles-button .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.srt-upload-button .icon {
+  font-size: 16px;
+}
+/* Ensure Material Symbols render above the star layer and use Material Symbols font */
+.srt-upload-button .material-symbols-rounded {
+  position: relative;
+  z-index: 2;
+  font-family: var(--ms-font-family) !important;
+  font-variation-settings: "wght" var(--ms-wght), "GRAD" var(--ms-grad), "opsz" var(--ms-opsz);
+}
+
+/* Keep Gemini star layer beneath content for this button */
+.srt-upload-button .gemini-icon-container {
+  z-index: 0 !important;
+}
+
+
+/* Gemini effects now handled by dynamic particle system */
+
+/* Processing state */
+.srt-upload-button.processing {
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(to right, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+}
+
+.srt-upload-button.processing::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%);
+  animation: pulse-glow 2s ease-out infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.0);
+    opacity: 0;
+  }
+}
+
+/* Processing text container */
+.srt-upload-button .processing-text-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Ensure LoadingIndicator displays inline within processing container */
+.srt-upload-button .processing-text-container .loading-indicator {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.srt-upload-button .processing-text {
+  font-size: var(--md-label-medium-size);
+}
+
+.srt-upload-button .processing-dots::after {
+  content: '.';
+  animation: dots 1.5s steps(5, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60% { content: '...'; }
+  80%, 100% { content: ''; }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .srt-upload-button {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  .srt-upload-button span {
+    display: none;
+  }
+
+  .srt-upload-buttons-group {
+    gap: 6px;
+  }
+
+  .srt-upload-button-container {
+    margin-right: 0;
+  }
+}

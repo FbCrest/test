@@ -1,0 +1,51 @@
+/* GeminiHeaderAnimation.css - Optimized styling */
+
+.gemini-header-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto; /* Enable mouse interactions */
+  z-index: 1; /* Above header background, below header content */
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+
+  /* Ensure the canvas doesn't create visual artifacts and is hardware accelerated */
+  transform: translateZ(0); /* Force hardware acceleration */
+  backface-visibility: hidden; /* Prevent flickering on some systems */
+
+  /* Ensure proper containment for rendering performance */
+  contain: layout style paint;
+}
+
+/* Make the canvas more visible on hover */
+.app-header:hover .gemini-header-canvas {
+  opacity: 0.9;
+}
+
+/* Ensure header content is always rendered above the canvas */
+.header-title,
+.header-actions,
+.header-title-container,
+.settings-button {
+  position: relative;
+  z-index: 4; /* Higher than canvas's z-index of 1 */
+}
+
+/* Add a subtle glow effect to the header title when header is hovered */
+.app-header:hover .header-title {
+  text-shadow: 0 0 10px rgba(var(--primary-rgb), 0.3);
+}
+
+/* Add a subtle animation to the header title */
+@keyframes title-pulse {
+  0%, 100% { transform: translateY(4px) scale(1); }
+  50%      { transform: translateY(4px) scale(1.01); }
+}
+
+.app-header:hover .header-title {
+  animation: title-pulse 3s infinite ease-in-out;
+  /* Hint to the browser to optimize for transform changes, preventing jank */
+  will-change: transform;
+}
