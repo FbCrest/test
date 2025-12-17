@@ -1,0 +1,33 @@
+{
+  "title": "Thêm Phụ Đề Của Bạn",
+  "explanation": "Dán phụ đề của bạn vào đây mà không cần thời gian. Khi bạn tạo phụ đề, hệ thống sẽ tập trung vào việc khớp các văn bản này với âm thanh và tạo thời gian chính xác. Mỗi dòng sẽ được coi là một phụ đề riêng biệt.",
+  "exampleTitle": "Ví dụ:",
+  "example": "Xin chào, chào mừng đến với hướng dẫn của chúng tôi.\nHôm nay chúng ta sẽ tìm hiểu về máy học.\nHãy bắt đầu!",
+  "placeholder": "Nhập phụ đề của bạn tại đây...",
+  "keyboardShortcuts": "Phím tắt:",
+  "toSave": "để lưu",
+  "toCancel": "để hủy",
+  "lineCount": "Đã nhập ??? dòng phụ đề",
+  "cancel": "Hủy",
+  "save": "Lưu Phụ Đề",
+  "addSubtitles": "Thêm phụ đề",
+  "editSubtitles": "Chỉnh sửa phụ đề đã cung cấp",
+  "subtitlesAdded": "Đã thêm phụ đề",
+  "generateBackground": "Bạn có muốn tạo hình nền được lấy cảm hứng từ ảnh bìa album và lời bài hát này không?",
+  "lyricsToggle": "Chuyển đổi tìm kiếm lời bài hát",
+  "fetchLyrics": "Lấy lời bài hát",
+  "artist": "Nghệ sĩ:",
+  "artistPlaceholder": "Nhập tên nghệ sĩ",
+  "song": "Bài hát:",
+  "songPlaceholder": "Nhập tên bài hát",
+  "fetch": "Lấy",
+  "fetching": "Đang lấy...",
+  "cleaning": "Đang làm sạch lời bài hát...",
+  "processing": "Đang xử lý...",
+  "clearSubtitles": "Xóa phụ đề",
+  "gemini25Warning": "Gemini 2.5 Pro, 2.5 Flash và 2.5 Flash Lite không cho kết quả tốt trong trường hợp này"
+,
+  "autoEraseBlankLines": "Tự động xóa dòng trống"
+,
+  "autoEraseBlankLinesHelp": "Tự động xóa các dòng trống trong văn bản dán vào và nội dung hiện có. Không làm ảnh hưởng khi bạn đang gõ."
+}
