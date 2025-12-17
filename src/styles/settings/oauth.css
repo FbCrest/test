@@ -1,0 +1,140 @@
+/* OAuth settings styles */
+
+.auth-method-toggle {
+  margin-bottom: 20px;
+}
+
+.auth-method-label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.auth-toggle-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.auth-toggle-btn {
+  padding: 8px 16px;
+  border-radius: var(--button-border-radius);
+  border: 1px solid var(--border-color);
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-toggle-btn:hover:not(.active) {
+  background-color: color-mix(in srgb, var(--background-secondary), var(--text-primary) 5%);
+}
+
+.auth-toggle-btn.active {
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  border-color: var(--md-primary-container);
+}
+
+.oauth-status-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.oauth-status-container label {
+  margin-right: 10px;
+}
+
+.oauth-client-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.oauth-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.oauth-input-group label {
+  margin-bottom: 5px;
+}
+
+.oauth-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.oauth-authenticate-btn {
+  padding: 8px 9px;
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  border: none;
+  border-radius: var(--button-border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.oauth-authenticate-btn:disabled {
+  background-color: color-mix(in srgb, var(--md-primary-container), transparent 60%);
+  color: color-mix(in srgb, var(--md-on-primary-container), transparent 40%);
+  cursor: not-allowed;
+}
+
+.oauth-clear-btn {
+  padding: 8px 16px;
+  background-color: var(--md-error-container);
+  color: var(--md-on-error-container);
+  border: none;
+  border-radius: var(--button-border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.oauth-authenticate-btn:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--md-primary-container), var(--md-on-primary-container) 10%);
+}
+
+.oauth-clear-btn:hover {
+  background-color: color-mix(in srgb, var(--md-error-container), var(--md-on-error-container) 10%);
+}
+
+/* OAuth Troubleshooting Styles */
+.api-key-instructions h5 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.api-key-instructions code {
+  display: inline-block;
+  background-color: var(--background-tertiary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 5px 0;
+  word-break: break-all;
+  color: var(--primary-color);
+}
+
+.api-key-instructions ul {
+  margin-left: 20px;
+  margin-bottom: 15px;
+  list-style-type: disc;
+}
+
+.api-key-instructions .note {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: var(--background-tertiary);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 4px;
+  font-style: italic;
+}
+
+.api-key-instructions h4 {
+  padding-top: 15px;
+}

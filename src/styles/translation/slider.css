@@ -1,0 +1,138 @@
+/* Split duration slider styles */
+
+.split-duration-row {
+  position: relative;
+}
+
+/* New layout for split duration row content */
+.split-duration-row .row-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  align-items: flex-start; /* Override base center alignment */
+}
+
+/* Slider control row with help icon inline */
+.split-duration-row .slider-control-row {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Help icon positioned next to slider value (restored original behavior) */
+.split-duration-row .help-icon-container {
+  margin-left: 8px; /* Restore original margin for positioning next to slider value */
+}
+
+/* Segment preview - full width, allows overflow */
+.split-duration-row .segment-preview-compact {
+  width: 100%;
+}
+
+/* Rest time row uses same layout as split duration row */
+.rest-time-row .row-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  align-items: flex-start; /* Override base center alignment */
+}
+
+.rest-time-row .slider-control-row {
+  width: 100%;
+  max-width: 400px;
+}
+
+.rest-time-row .help-icon-container {
+  margin-left: 8px; /* Same as split-duration-row */
+}
+
+.slider-control-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 42px;
+  /* Padding removed - now handled by .custom-slider-container */
+}
+
+.slider-with-value {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 420px; /* Reduced: StandardSlider + smaller gap + compact value */
+  gap: 6px; /* Smaller gap for closer spacing */
+  height: 44px; /* Match StandardSlider height */
+}
+
+/* Custom slider styling is imported from components/custom-slider.css */
+
+.slider-value-display {
+  min-width: 55px; /* Smaller minimum width, closer to track */
+  font-size: 0.9rem;
+  color: var(--md-primary);
+  font-weight: 500;
+  text-align: center;
+  flex-shrink: 0; /* Don't allow shrinking */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Compact segment preview styling */
+.segment-preview-compact {
+  font-size: 0.85rem;
+  color: var(--md-on-surface-variant);
+  margin-top: 0;
+  display: flex;
+  align-items: flex-start;
+  min-height: 24px;
+  /* Remove max-height to allow free overflow */
+}
+
+.single-segment {
+  font-style: italic;
+}
+
+.segment-pills {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  /* Allow free overflow - no max-height or scrolling restrictions */
+}
+
+.segment-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--md-surface-2);
+  color: var(--md-on-surface);
+  border-radius: 12px;
+  padding: 1px 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  min-width: 20px;
+  height: 20px;
+  margin-bottom: 2px;
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.segment-pill:hover {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive styles for split duration layout */
+@media (max-width: 768px) {
+  /* Layout remains the same on mobile since we're using flexbox column */
+  .split-duration-row .slider-control-row {
+    max-width: 100%;
+  }
+
+  /* Rest time row responsive layout */
+  .rest-time-row .slider-control-row {
+    max-width: 100%;
+  }
+}

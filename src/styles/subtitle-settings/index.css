@@ -1,0 +1,12 @@
+/* Subtitle Settings CSS - Main file that imports all modular components */
+
+/* Import base styles */
+@import './base.css';
+
+/* Import component styles */
+@import './buttons.css';
+@import './panel.css';
+@import './controls.css';
+@import './font-options.css';
+@import './responsive.css';
+@import './slider-fixes.css'; /* Import slider fixes */

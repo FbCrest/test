@@ -1,0 +1,65 @@
+/* Base modal structure and overlay */
+
+.settings-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(3px);
+  /* i want short duration */
+  transition: opacity 0.2s var(--md-easing-emphasized-accelerate);
+  /* Allow touch scrolling through the modal overlay */
+  pointer-events: none;
+}
+
+.settings-modal-overlay.closing {
+  opacity: 0;
+}
+
+/* Material Design 3 modal */
+.settings-modal {
+  background-color: var(--background-primary);
+  border-radius: var(--modal-border-radius);
+  width: 80%;
+  height: 80%; /* Use viewport height for consistent sizing */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Hide any content that overflows the container */
+  animation: modal-appear var(--md-duration-medium3) var(--md-easing-emphasized-decelerate);
+  transition: background-color var(--transition-speed), transform var(--md-duration-medium3) var(--md-easing-emphasized-accelerate), opacity var(--md-duration-medium3) var(--md-easing-emphasized-accelerate);
+  /* Ensure child elements respect the border radius */
+  position: relative;
+  /* Fix for scrollbar appearing outside border radius */
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  /* Create a containing block for absolute positioning */
+  contain: layout;
+  /* Allow pointer events on the modal content */
+  pointer-events: auto;
+}
+
+.settings-modal.closing {
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+}
+
+/* Loading placeholder for delayed rendering */
+.loading-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  gap: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

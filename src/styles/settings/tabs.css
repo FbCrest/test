@@ -1,0 +1,229 @@
+/* Settings tabs styles */
+
+.settings-tabs {
+  display: flex;
+  margin-bottom: 0;
+  padding: 0;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  min-height: 50px; /* Minimum height instead of fixed height */
+  position: relative; /* For proper positioning of the active indicator */
+  z-index: 1; /* Ensure tabs are above content */
+  flex: 1;
+  margin: 0 2rem;
+  --settings-pill-width: 0px;
+  --settings-pill-left: 0px;
+  align-items: center; /* Center tabs vertically */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  cursor: grab; /* Indicate tabs are draggable */
+  user-select: none; /* Prevent text selection during drag */
+  scroll-behavior: smooth; /* Smooth scrolling */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  /* Add visual drag handle indicator */
+  padding-right: 30px; /* Make room for the drag handle icon */
+  padding-left: 16px; /* Add padding to prevent pill clipping */
+}
+
+/* Material Symbols Rounded drag handle */
+.settings-tabs::after {
+ content: "chevron_right";
+ font-family: var(--ms-font-family);
+ font-variation-settings: "wght" var(--ms-wght), "GRAD" var(--ms-grad), "opsz" var(--ms-opsz);
+ position: absolute;
+ right: 10px;
+ top: 50%;
+ transform: translateY(-50%);
+ pointer-events: none;
+ color: rgba(128, 128, 128, 0.3);
+ font-size: 16px;
+}
+
+/* Sliding pill background for active tab - Material Design 3 style */
+.settings-tabs .pill-background {
+  content: '';
+  position: absolute;
+  height: 40px;
+  width: var(--settings-pill-width);
+  left: var(--settings-pill-left);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(var(--md-primary-container-rgb), 0.5);
+  border-radius: 20px;
+  z-index: 0;
+  box-shadow: 0 2px 8px rgba(var(--md-primary-rgb), 0.15),
+              0 1px 3px rgba(var(--md-primary-rgb), 0.1),
+              inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transition: all var(--md-duration-medium4) var(--md-easing-emphasized);
+  opacity: 0;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(var(--md-primary-rgb), 0.1);
+}
+
+/* Gooey overlay (physics-driven) */
+.settings-tabs.goo-ready .pill-background { display: none; }
+.settings-tabs .pill-overlay {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  filter: url(#goo);
+}
+.settings-tabs .pill-overlay .goo-blob {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  height: 40px; border-radius: 999px;
+  background: radial-gradient(120% 100% at 50% 40%, rgba(var(--md-primary-container-rgb), 0.58) 0%, rgba(var(--md-primary-container-rgb), 0.46) 62%, rgba(var(--md-primary-container-rgb), 0.34) 100%);
+  box-shadow: 0 2px 8px rgba(var(--md-primary-rgb), 0.16), 0 1px 3px rgba(var(--md-primary-rgb), 0.1), inset 0 1px 1px rgba(255,255,255,0.08);
+  border: 1px solid rgba(var(--md-primary-rgb), 0.08);
+  will-change: left, width, transform;
+  transition: none; /* driven by JS */
+  backface-visibility: hidden;
+  contain: layout paint style size;
+}
+
+
+/* When there's an active tab, show the pill */
+.settings-tabs:has(.settings-tab.active) .pill-background {
+  opacity: 1;
+}
+
+.settings-tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.settings-tab {
+  padding: 0.75rem 1.25rem;
+  border: none;
+  background: transparent;
+  border-radius: 20px; /* Pill shape */
+  color: var(--md-on-surface-variant);
+  font-family: 'Google Sans', 'Open Sans', sans-serif;
+  font-size: var(--md-label-large-size);
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--md-duration-medium3) var(--md-easing-emphasized);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1; /* Above the pill background */
+  height: 40px; /* Fixed height for consistency */
+  margin: 0 4px; /* Add some spacing between tabs */
+  opacity: 0.85;
+}
+
+.settings-tab svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  transition: all var(--md-duration-medium2) var(--md-easing-emphasized);
+  opacity: 0.9;
+}
+
+.settings-tab:hover svg {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* Material Design 3 active state for tab buttons */
+.settings-tab.active {
+  color: var(--md-on-primary-container);
+  font-weight: bold;
+  opacity: 1;
+  transform: scale(1.2);
+  letter-spacing: 0.2px; /* Slightly increased letter spacing for emphasis */
+  text-shadow: 0 1px 1px rgba(var(--md-primary-rgb), 0.1); /* Subtle text shadow */
+}
+
+.settings-tab.active svg {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+
+/* Small circular badge on tab button */
+.settings-tab .tab-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--md-primary);
+  box-shadow: 0 0 0 4px rgba(var(--md-primary-rgb), 0.15);
+}
+
+/* Make badge visible on active state as well */
+.settings-tab.active .tab-badge {
+  background: var(--md-primary);
+}
+
+/* State layer for hover effect - Material Design 3 state layer */
+.settings-tab:hover:not(.active) {
+  opacity: 1;
+  background-color: rgba(var(--md-on-surface-variant-rgb), 0.05);
+  transform: translateY(-1px);
+}
+
+/* Material Design 3 ripple effect */
+.settings-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--md-primary);
+  opacity: 0;
+  transform: scale(0);
+  transition: transform var(--md-duration-medium3) var(--md-easing-emphasized),
+              opacity var(--md-duration-medium3) var(--md-easing-emphasized);
+  border-radius: 20px; /* Match the button's border-radius */
+  pointer-events: none;
+}
+
+.settings-tab:active::before {
+  opacity: 0.08;
+  transform: scale(1);
+  transition: transform var(--md-duration-short4) var(--md-easing-emphasized),
+              opacity var(--md-duration-short4) var(--md-easing-emphasized);
+}
+
+/* Styles for when tabs are being dragged */
+.settings-tabs.dragging {
+  cursor: grabbing;
+  scroll-behavior: auto; /* Disable smooth scrolling during drag for better performance */
+}
+
+.settings-tabs.dragging::after {
+  color: rgba(128, 128, 128, 0.5);
+}
+
+/* Add fade indicators to show there are more tabs */
+.settings-tabs::after,
+.settings-tabs::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 40px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none; /* Allow clicks to pass through */
+  z-index: 2; /* Above the pill background */
+}
+
+.settings-tabs.has-overflow::after,
+.settings-tabs.has-overflow::before {
+  opacity: 1;
+}
+
+/* Tab content */
+.settings-tab-content {
+  display: none;
+  padding: 1rem 1.5rem 0;
+  clear: both; /* Ensure content doesn't overlap with tabs */
+  /* Add padding at the bottom to ensure content doesn't get hidden behind the footer */
+  padding-bottom: 4rem;
+}
+
+.settings-tab-content.active {
+  display: block;
+}

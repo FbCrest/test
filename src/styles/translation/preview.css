@@ -1,0 +1,579 @@
+/* Translation preview styles */
+
+.translation-preview {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--background-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+/* Remove border for translation-row preview-row */
+.translation-row.preview-row .translation-preview {
+  border: none;
+}
+
+/* Header container with title and stats */
+.translation-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.translation-preview h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+/* Cache indicator styling */
+.cache-indicator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--md-primary);
+  animation: fadeIn 0.5s ease;
+}
+
+.cache-indicator svg {
+  stroke: var(--md-primary);
+}
+
+/* Stats section - right aligned in header */
+.translation-preview-stats {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Virtualized container */
+.translation-preview-virtualized {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background-color: var(--md-surface-1);
+}
+
+/* Virtualized list */
+.translation-preview-list {
+  background-color: var(--md-surface-1);
+  overflow-x: hidden !important; /* Prevent horizontal scrollbar */
+
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: var(--md-outline-variant) var(--md-surface-1);
+}
+
+/* Webkit (Chrome, Safari, Edge) scrollbar styling */
+.translation-preview-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.translation-preview-list::-webkit-scrollbar:horizontal {
+  display: none; /* Hide horizontal scrollbar */
+}
+
+.translation-preview-list::-webkit-scrollbar-track {
+  background: var(--md-surface-1);
+  border-radius: 4px;
+}
+
+.translation-preview-list::-webkit-scrollbar-thumb {
+  background: var(--md-outline-variant);
+  border-radius: 4px;
+}
+
+.translation-preview-list::-webkit-scrollbar-thumb:hover {
+  background: var(--md-outline);
+}
+
+/* Individual subtitle row in virtualized list */
+.preview-subtitle-row {
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-color);
+  transition: all 0.3s var(--md-easing-emphasized);
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  cursor: default;
+}
+
+/* Alternating segment background colors for better distinction */
+.preview-subtitle-row[data-segment-odd="true"] {
+  background-color: var(--md-surface-1);
+}
+
+.preview-subtitle-row[data-segment-odd="false"] {
+  background-color: var(--md-surface-2);
+}
+
+.preview-subtitle-row:hover {
+  background-color: var(--md-surface-3) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(var(--md-primary-rgb), 0.05);
+}
+
+.preview-subtitle-row:hover .preview-segment-sticky {
+  background-color: color-mix(in srgb, var(--md-surface-4), var(--md-primary) 5%);
+  border-right-color: color-mix(in srgb, var(--md-primary), white 10%);
+}
+
+.preview-subtitle-row:hover .preview-number-sticky {
+  background-color: var(--md-surface-4);
+}
+
+.preview-subtitle-row:hover .subtitle-retry-btn {
+  opacity: 0.7;
+}
+
+.preview-subtitle-row:last-child {
+  border-bottom: none;
+}
+
+/* Segment column - sticky and consistent height */
+.preview-segment-sticky {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  flex-shrink: 0;
+  width: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--md-surface-4);
+  border-right: 2px solid var(--md-primary);
+  padding: 0.25rem;
+  min-height: 100%;
+}
+
+/* Add visual break between segments */
+.preview-subtitle-row[data-is-first-in-segment="true"]:not(:first-child) {
+  border-top: 3px solid var(--md-primary);
+  margin-top: 2px;
+}
+
+.preview-subtitle-row[data-is-first-in-segment="true"]:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--md-primary) 0%, var(--md-primary-variant) 100%);
+  z-index: 1;
+}
+
+.segment-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.segment-label {
+  font-size: 0.75rem;
+  color: var(--md-primary);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  writing-mode: horizontal-tb;
+  background: var(--md-primary-container);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--md-primary);
+  box-shadow: 0 1px 3px rgba(var(--md-primary-rgb), 0.2);
+}
+
+.segment-retry-btn {
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s var(--md-easing-emphasized);
+  font-size: 0;
+  box-shadow: var(--md-elevation-level2);
+  position: relative;
+  overflow: hidden;
+}
+
+.segment-retry-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(0);
+  transition: transform 0.3s var(--md-easing-emphasized);
+  border-radius: 50%;
+}
+
+.segment-retry-btn:hover {
+  background: color-mix(in srgb, var(--md-primary), black 10%);
+  transform: scale(1.05);
+  box-shadow: var(--md-elevation-level3);
+}
+
+.segment-retry-btn:hover::before {
+  transform: scale(1);
+}
+
+.segment-retry-btn:active {
+  transform: scale(0.95);
+  box-shadow: var(--md-elevation-level1);
+}
+
+.segment-retry-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.segment-retry-btn.loading {
+  background: var(--md-secondary);
+  cursor: wait;
+}
+
+.segment-retry-btn .retry-icon {
+  stroke: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.segment-retry-btn:hover .retry-icon {
+  transform: rotate(15deg);
+}
+
+.segment-loading {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.subtitle-loading {
+  filter: drop-shadow(0 1px 2px rgba(var(--md-primary-rgb), 0.3));
+}
+
+/* Segment indicator for non-first rows */
+.segment-indicator {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Override margin only in translation preview context */
+.translation-preview .segment-indicator {
+  margin-right: 0 !important;
+}
+
+.segment-line {
+  width: 2px;
+  height: 60%;
+  background-color: var(--md-primary);
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.segment-line.pulsing {
+  opacity: 0.8;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Sticky numbering within each row */
+.preview-number-sticky {
+  position: sticky;
+  left: 5rem; /* Offset by segment column width */
+  z-index: 2;
+  flex-shrink: 0;
+  width: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 600;
+  background-color: var(--md-surface-3);
+  border-right: 1px solid var(--border-color);
+  min-height: 100%;
+  gap: 0.25rem;
+  padding: 0.25rem;
+}
+
+.subtitle-number {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.subtitle-retry-btn {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: all 0.3s var(--md-easing-emphasized);
+  color: var(--text-secondary);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.subtitle-retry-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--md-primary-container);
+  opacity: 0;
+  transition: opacity 0.3s var(--md-easing-emphasized);
+  border-radius: 6px;
+}
+
+.subtitle-retry-btn:hover {
+  opacity: 1;
+  color: var(--md-primary);
+  transform: scale(1.1);
+}
+
+.subtitle-retry-btn:hover::before {
+  opacity: 0.12;
+}
+
+.subtitle-retry-btn:active {
+  transform: scale(0.9);
+}
+
+.subtitle-retry-btn:active::before {
+  opacity: 0.2;
+}
+
+.subtitle-retry-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.subtitle-retry-btn.loading {
+  opacity: 1;
+  color: var(--md-primary);
+  cursor: wait;
+}
+
+.subtitle-retry-btn.loading::before {
+  opacity: 0.12;
+}
+
+.subtitle-retry-btn .retry-icon {
+  stroke: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.subtitle-retry-btn:hover .retry-icon {
+  transform: rotate(10deg);
+}
+
+
+/* Content area (time + text) */
+.preview-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  min-width: 0; /* Allow text to wrap properly */
+  position: relative; /* For retry overlay positioning */
+  justify-content: flex-start; /* Align content to top */
+  transition: all 0.2s ease;
+}
+
+.preview-time {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
+  transition: color 0.2s ease;
+}
+
+.preview-subtitle-row:hover .preview-time {
+  color: var(--md-primary);
+  opacity: 1;
+}
+
+.preview-text {
+  color: var(--text-primary);
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  opacity: 0.95;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.preview-subtitle-row:hover .preview-text {
+  opacity: 1;
+}
+
+/* Bulk preview file selector */
+.bulk-preview-selector {
+  margin-bottom: 1rem;
+}
+
+.bulk-preview-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.bulk-preview-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--md-surface-2);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--md-duration-medium2) var(--md-easing-standard);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.bulk-preview-pill:hover {
+  background-color: var(--md-surface-3);
+  border-color: var(--md-outline);
+  transform: translateY(-1px);
+}
+
+.bulk-preview-pill.active {
+  background-color: var(--md-primary-container);
+  border-color: var(--md-primary);
+  color: var(--md-on-primary-container);
+}
+
+.bulk-preview-pill svg {
+  flex-shrink: 0;
+  stroke: var(--md-primary);
+}
+
+.bulk-preview-pill.active svg {
+  stroke: var(--md-on-primary-container);
+}
+
+.pill-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.pill-count {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+/* Retry animations and states */
+.preview-subtitle-row.retrying {
+  background-color: var(--md-surface-2);
+  animation: retryPulse 2s ease-in-out infinite;
+}
+
+.retry-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(var(--md-primary-rgb), 0.08) 0%, 
+    rgba(var(--md-secondary-rgb), 0.06) 100%);
+  backdrop-filter: blur(1px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  pointer-events: none;
+  border-radius: 8px;
+  margin: 2px;
+  animation: retryOverlayFade 0.3s ease-in;
+}
+
+.retry-overlay-loading {
+  filter: drop-shadow(0 2px 4px rgba(var(--md-primary-rgb), 0.2));
+}
+
+/* Keyframe animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes retryPulse {
+  0%, 100% { background-color: var(--md-surface-2); }
+  50% { background-color: var(--md-surface-3); }
+}
+
+@keyframes retryOverlayFade {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Legacy styles for backward compatibility */
+.translation-preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.preview-more {
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.9rem;
+}

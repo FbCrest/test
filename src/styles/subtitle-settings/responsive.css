@@ -1,0 +1,30 @@
+/* Responsive styles for subtitle settings */
+
+/* Standard responsive styles */
+@media (max-width: 768px) {
+  .subtitle-settings-panel {
+    width: 300px;
+    right: 0;
+    max-height: 60vh;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .action-button {
+    font-size: var(--md-label-medium-size, 0.8rem);
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+  }
+
+  .settings-content {
+    padding: 1rem;
+  }
+
+  .setting-group {
+    margin-bottom: 1.25rem;
+  }
+}

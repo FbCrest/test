@@ -1,0 +1,343 @@
+/* Cache section styles */
+
+/* Cache section */
+.cache-section {
+  min-height: 400px; /* Ensure the cache section has a minimum height */
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Take full height of parent */
+}
+
+.cache-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.cache-section-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+
+.cache-content {
+  width: 100%;
+}
+
+/* Cache actions row with buttons */
+.cache-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cache-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty-cache-info {
+  background-color: var(--md-surface-1);
+  border-radius: var(--card-border-radius);
+  padding: 16px 20px;
+  margin: 0;
+  color: var(--text-secondary);
+  border: 1px dashed var(--border-color);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+}
+
+.empty-cache-info p {
+  margin: 0 0 8px 0;
+}
+
+/* Loading indicator */
+.cache-loading {
+  background-color: var(--md-surface-1);
+  border-radius: var(--card-border-radius);
+  padding: 16px 20px;
+  margin: 0;
+  color: var(--text-secondary);
+  text-align: center;
+  position: relative;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.cache-loading p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Old spinner styles removed - now using LoadingIndicator component */
+
+.cache-description {
+  margin: 0.5rem 0 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Material Design 3 card for cache details */
+.cache-details {
+  background-color: var(--md-surface-1);
+  border-radius: var(--card-border-radius);
+  padding: 16px 20px;
+  margin: 0;
+  width: 100%;
+  font-size: var(--md-body-medium-size);
+  line-height: var(--md-body-medium-height);
+  animation: fadeIn var(--md-duration-medium2) var(--md-easing-standard);
+  box-shadow: var(--md-elevation-level1);
+  transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+  position: relative;
+}
+
+/* Subtle overlay for cache details when clearing */
+.cache-details.clearing {
+  opacity: 0.8;
+}
+
+.cache-details.clearing::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: var(--card-border-radius);
+  pointer-events: none;
+}
+
+.cache-details-header {
+  margin-bottom: 16px;
+}
+
+.cache-details-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.cache-details-summary {
+  background-color: var(--md-surface-2);
+  border-radius: var(--card-border-radius);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.cache-total {
+  margin: 0;
+  font-size: var(--md-body-medium-size);
+  color: var(--text-primary);
+}
+
+.refresh-cache-btn {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--md-shape-pill);
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.refresh-cache-btn:hover {
+  background-color: var(--md-surface-2);
+}
+
+.refresh-cache-btn:active {
+  transform: scale(0.98);
+}
+
+.refresh-cache-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.refresh-icon {
+  font-size: 1rem;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.refresh-cache-btn:hover .refresh-icon {
+  transform: rotate(180deg);
+}
+
+/* Cache details grid layout */
+.cache-details-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 16px;
+  width: 100%;
+}
+
+.cache-details-grid-header {
+  grid-column: span 4;
+  margin-bottom: 20px;
+}
+
+.cache-details-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Add consistent spacing between items */
+}
+
+/* Cache columns - legacy, keeping for compatibility */
+.cache-left-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.cache-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Deprecated: inline cache status messages removed.
+   Use the global toast system instead (window.addToast).
+   Kept as a placeholder in case a future component requires a local status block. */
+
+.cache-details-item {
+  margin-bottom: 0; /* Remove margin since we're using gap in parent */
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--md-outline-variant);
+  transition: border-color var(--transition-speed);
+}
+
+.cache-details-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.cache-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cache-details-item h4 {
+  margin: 1px;
+  font-size: var(--md-title-small-size);
+  line-height: var(--md-title-small-height);
+  font-weight: var(--md-title-small-weight);
+  color: var(--text-primary);
+  transition: color var(--transition-speed);
+  flex: 1;
+  font-stretch: condensed;
+}
+
+.cache-details-item p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--md-body-medium-size);
+  line-height: var(--md-body-medium-height);
+  transition: color var(--transition-speed);
+}
+
+/* Empty cache item styling - grayed out appearance */
+.cache-details-item.empty-cache-item {
+  opacity: 0.6;
+}
+
+.cache-details-item.empty-cache-item h4 {
+  color: var(--text-disabled, rgba(0, 0, 0, 0.38));
+}
+
+.cache-details-item.empty-cache-item p {
+  color: var(--text-disabled, rgba(0, 0, 0, 0.38));
+}
+
+/* Dark mode specific styling for empty cache items */
+[data-theme="dark"] .cache-details-item.empty-cache-item h4 {
+  color: var(--text-disabled, rgba(255, 255, 255, 0.38));
+}
+
+[data-theme="dark"] .cache-details-item.empty-cache-item p {
+  color: var(--text-disabled, rgba(255, 255, 255, 0.38));
+}
+
+
+
+/* Responsive styles for cache section */
+@media (max-width: 1200px) {
+  .cache-details-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
+  }
+
+  .cache-details-grid-header {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 900px) {
+  .cache-details-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
+  }
+
+  .cache-details-grid-header {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .cache-details-grid {
+    grid-template-columns: 1fr; /* Single column on mobile */
+  }
+
+  .cache-details-grid-header {
+    grid-column: span 1;
+  }
+
+  .cache-actions-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .cache-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .clear-cache-btn,
+  .refresh-cache-btn {
+    width: 100%;
+  }
+
+  .cache-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .cache-item-header .remove-key {
+    margin-left: 0;
+    align-self: flex-end;
+  }
+}

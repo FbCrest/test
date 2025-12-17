@@ -1,0 +1,27 @@
+/* Material Web Switch styles for translation components */
+
+/* Material switch container for rules row */
+.material-switch-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+/* Specific positioning for the help icon in the rules row */
+.material-switch-container .help-icon-container {
+  margin-left: 4px;
+}
+
+/* Label with help icon container */
+.label-with-help {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+
+
+
+
+
