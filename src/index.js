@@ -1,117 +1,39 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';
-import './styles/audio-player-dark-theme.css';
-import './styles/video-player-dark-theme.css';
 import App from './App';
 import './i18n/i18n';
-import './utils/sliderDragHandler';
-import './utils/sliderResetHandler';
-import './utils/sliderDefaults';
-import { getThemeWithFallback, setupSystemThemeListener } from './utils/systemDetection';
-
-// Suppress harmless ResizeObserver loop error
-const suppressResizeObserverError = () => {
-  // Handle console errors
-  const originalError = console.error;
-  console.error = (...args) => {
-    if (
-      args.length > 0 &&
-      typeof args[0] === 'string' &&
-      args[0].includes('ResizeObserver loop completed with undelivered notifications')
-    ) {
-      // Suppress this specific harmless error
-      return;
-    }
-    originalError.apply(console, args);
-  };
-
-  // Handle window errors
-  window.addEventListener('error', (event) => {
-    if (
-      event.message &&
-      event.message.includes('ResizeObserver loop completed with undelivered notifications')
-    ) {
-      event.preventDefault();
-      event.stopPropagation();
-      return false;
-    }
-  });
-
-  // Handle unhandled promise rejections
-  window.addEventListener('unhandledrejection', (event) => {
-    if (
-      event.reason &&
-      event.reason.message &&
-      event.reason.message.includes('ResizeObserver loop completed with undelivered notifications')
-    ) {
-      event.preventDefault();
-      return false;
-    }
-  });
-};
-
-// Initialize error suppression
-suppressResizeObserverError();
 
 // Theme initialization
 const initializeTheme = () => {
-  const theme = getThemeWithFallback();
-  document.documentElement.setAttribute('data-theme', theme);
+  const storedTheme = localStorage.getItem('theme');
 
-  // Save to localStorage if not already saved
-  if (!localStorage.getItem('theme')) {
-    localStorage.setItem('theme', theme);
-  }
+  if (storedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else if (storedTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else if (storedTheme === 'system' || !storedTheme) {
+    // Check system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
 
-  // Set up system theme change listener
-  setupSystemThemeListener((newTheme) => {
-    const currentStoredTheme = localStorage.getItem('theme');
-    // Only update if user hasn't manually set a preference
-    if (!currentStoredTheme || currentStoredTheme === 'system') {
-      document.documentElement.setAttribute('data-theme', newTheme);
-      if (!currentStoredTheme) {
-        localStorage.setItem('theme', newTheme);
-      }
+    // If no theme is set, default to dark
+    if (!storedTheme) {
+      localStorage.setItem('theme', 'dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
     }
-  });
-};
 
-// Disable browser scroll restoration to prevent unwanted scrolling on page refresh
-if (window.history && window.history.scrollRestoration) {
-  window.history.scrollRestoration = 'manual';
-}
+    // Add listener for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      if (localStorage.getItem('theme') === 'system') {
+        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+      }
+    });
+  }
+};
 
 // Initialize theme
 initializeTheme();
-// Mark Material Symbols font ready to avoid showing ligature text
-const markMaterialSymbolsReady = () => {
-  const html = document.documentElement;
-  if (html.classList.contains('ms-font-ready')) return;
-  html.classList.add('ms-font-ready');
-};
-
-const waitForMaterialSymbols = async () => {
-  try {
-    if (document.fonts && document.fonts.load) {
-      // Trigger load for a representative glyph
-      await document.fonts.load('24px "Material Symbols Rounded"');
-      markMaterialSymbolsReady();
-    } else {
-      // Fallback: mark ready after a short delay
-      setTimeout(markMaterialSymbolsReady, 500);
-    }
-  } catch (e) {
-    // Ensure we don't leave icons hidden if something fails
-    setTimeout(markMaterialSymbolsReady, 500);
-  }
-};
-
-waitForMaterialSymbols();
-
-
-// Scroll to top on page load to ensure we start at the beginning
-window.scrollTo(0, 0);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

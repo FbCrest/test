@@ -1,0 +1,666 @@
+import { parseStructuredJsonResponse } from './structuredJsonParser';
+import { deduplicateAndSortSubtitles } from './subtitleUtils';
+
+/**
+ * Parse raw text from Gemini when the subtitle parser fails
+ * @param {string} rawText - The raw text from Gemini
+ * @param {number} startTime - The start time offset for this segment
+ * @returns {Array} - Array of subtitle objects
+ */
+export const parseRawTextManually = (rawText, startTime = 0) => {
+    if (!rawText) return [];
+
+    const subtitles = [];
+
+    // Match the format with both start and end times: [ 0m0s000ms - 0m1s500ms ] Text
+    // This handles various formats including with or without milliseconds
+    const regex = /\[\s*(\d+)m(\d+)s(?:(\d+)ms)?\s*-\s*(\d+)m(\d+)s(?:(\d+)ms)?\s*\]\s*(.+?)(?=\[|$)/g;
+    let match;
+
+    while ((match = regex.exec(rawText)) !== null) {
+        const startMin = parseInt(match[1]);
+        const startSec = parseInt(match[2]);
+        const startMs = match[3] ? parseInt(match[3]) / 1000 : 0;
+        const endMin = parseInt(match[4]);
+        const endSec = parseInt(match[5]);
+        const endMs = match[6] ? parseInt(match[6]) / 1000 : 0;
+        const text = match[7].trim();
+
+        if (text) {
+            subtitles.push({
+                id: subtitles.length + 1,
+                start: startMin * 60 + startSec + startMs,
+                end: endMin * 60 + endSec + endMs,
+                text: text
+            });
+        }
+    }
+
+    // If no matches with the above format, try the single timestamp format: [ 0m0s437ms ] Text
+    if (subtitles.length === 0) {
+        const singleTimestampRegex = /\[\s*(\d+)m(\d+)s(?:(\d+)ms)?\s*\]\s*(.+?)(?=\[|$)/g;
+
+        // Process each subtitle
+        while ((match = singleTimestampRegex.exec(rawText)) !== null) {
+            const startMin = parseInt(match[1]);
+            const startSec = parseInt(match[2]);
+            const startMs = match[3] ? parseInt(match[3]) / 1000 : 0;
+            const text = match[4].trim();
+
+            const start = startMin * 60 + startSec + startMs;
+
+            // If this is not the first subtitle, set the end time of the previous subtitle
+            if (subtitles.length > 0) {
+                subtitles[subtitles.length - 1].end = start;
+            }
+
+            // For the current subtitle, set the end time to start + 5 seconds (temporary)
+            const end = start + 5;
+
+            if (text) {
+                subtitles.push({
+                    id: subtitles.length + 1,
+                    start: start,
+                    end: end,
+                    text: text
+                });
+            }
+        }
+
+        // Adjust the end time of the last subtitle if needed
+        if (subtitles.length > 0) {
+            const lastSubtitle = subtitles[subtitles.length - 1];
+            if (lastSubtitle.end > lastSubtitle.start + 10) {
+                lastSubtitle.end = lastSubtitle.start + 5; // Limit to 5 seconds if it's too long
+            }
+        }
+    }
+
+    // If no matches, try to split by lines and look for timestamps
+    if (subtitles.length === 0) {
+        const lines = rawText.split('\n');
+        for (const line of lines) {
+            const lineMatch = line.match(/\[\s*(\d+)m(\d+)s\s*-\s*(\d+)m(\d+)s\s*\]\s*(.+)/);
+            if (lineMatch) {
+                const startMin = parseInt(lineMatch[1]);
+                const startSec = parseInt(lineMatch[2]);
+                const endMin = parseInt(lineMatch[3]);
+                const endSec = parseInt(lineMatch[4]);
+                const text = lineMatch[5].trim();
+
+                if (text) {
+                    subtitles.push({
+                        id: subtitles.length + 1,
+                        start: startMin * 60 + startSec,
+                        end: endMin * 60 + endSec,
+                        text: text
+                    });
+                }
+            }
+        }
+    }
+
+    // Apply the start time offset to all subtitles
+    if (startTime > 0 && subtitles.length > 0) {
+        subtitles.forEach(subtitle => {
+            subtitle.start += startTime;
+            subtitle.end += startTime;
+        });
+    }
+
+    return subtitles;
+};
+
+export const parseGeminiResponse = async (response) => {
+    // First, check if this is a structured JSON response
+    if (response?.candidates?.[0]?.content?.parts?.[0]?.structuredJson) {
+        try {
+            // console.log('Processing structured JSON response from Gemini');
+            return await parseStructuredJsonResponse(response);
+        } catch (error) {
+            console.error('Error parsing structured JSON response:', error);
+            // console.log('Falling back to text parsing');
+        }
+    }
+
+    // Check if the text field contains a JSON array (common with Gemini 2.5 Flash)
+    if (response?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        const text = response.candidates[0].content.parts[0].text;
+        // console.log('Raw text from Gemini:', text);
+
+        // Check if the text is a JSON array
+        if (text.trim().startsWith('[') && text.trim().endsWith(']')) {
+            try {
+                const jsonData = JSON.parse(text);
+                if (Array.isArray(jsonData) && jsonData.length > 0) {
+                    // console.log('Detected JSON array in text field, processing as structured response');
+                    const mockResponse = {
+                        candidates: [{
+                            content: {
+                                parts: [{
+                                    structuredJson: jsonData
+                                }]
+                            }
+                        }]
+                    };
+                    return await parseStructuredJsonResponse(mockResponse);
+                }
+            } catch (e) {
+                console.error('Failed to parse text as JSON:', e);
+                // console.log('Falling back to text parsing');
+            }
+        }
+    }
+
+    // Fallback to text parsing for backward compatibility
+    if (!response?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        throw new Error('Invalid response format from Gemini API');
+    }
+
+    const text = response.candidates[0].content.parts[0].text;
+
+    const subtitles = [];
+    let hasTimestamps = false;
+    let match;
+
+    // Try new format with descriptions and on-screen text: [0:08 - 0:16] (Description)
+    const regexNewFormat = /\[(\d+):(\d+)\s*-\s*(\d+):(\d+)\]\s*(?:\((.*?)\)|(.+?)(?=\[|$))/gs;
+
+    while ((match = regexNewFormat.exec(text)) !== null) {
+        hasTimestamps = true;
+        const startMin = parseInt(match[1]);
+        const startSec = parseInt(match[2]);
+        const endMin = parseInt(match[3]);
+        const endSec = parseInt(match[4]);
+
+        let content = match[5] || match[6];
+        if (content) {
+            content = content.trim();
+            if (content.startsWith('On-screen text:')) {
+                content = content.substring('On-screen text:'.length).trim();
+            }
+
+            subtitles.push({
+                id: subtitles.length + 1,
+                start: startMin * 60 + startSec,
+                end: endMin * 60 + endSec,
+                text: content
+            });
+        }
+    }
+
+    // Try other formats if new format didn't work
+    if (subtitles.length === 0) {
+        subtitles.push(...parseOriginalFormat(text));
+    }
+
+    if (subtitles.length === 0) {
+        subtitles.push(...parseMillisecondsFormat(text));
+    }
+
+    if (subtitles.length === 0) {
+        subtitles.push(...parseSingleTimestampFormat(text));
+    }
+
+    // Try the new bracket format with spaces: [ 0m0s - 0m1s ] Text
+    if (subtitles.length === 0) {
+        subtitles.push(...parseBracketSpaceFormat(text));
+    }
+
+    if (!hasTimestamps && subtitles.length === 0) {
+        throw new Error(JSON.stringify({
+            type: 'unrecognized_format',
+            message: 'Unrecognized subtitle format. Please add handling for this new format and try again.',
+            rawText: text
+        }));
+    }
+
+    return deduplicateAndSortSubtitles(subtitles);
+};
+
+const parseOriginalFormat = (text) => {
+    const subtitles = [];
+    const regexOriginal = /\[\s*(\d+)m(\d+)s\s*-\s*(\d+)m(\d+)s\s*\](?:\n|\r\n?)+(.*?)(?=\[\s*\d+m\d+s|\s*$)/gs;
+    let match;
+
+    while ((match = regexOriginal.exec(text)) !== null) {
+        const startMin = parseInt(match[1]);
+        const startSec = parseInt(match[2]);
+        const endMin = parseInt(match[3]);
+        const endSec = parseInt(match[4]);
+
+        let subtitleText = match[5].trim();
+
+        subtitles.push({
+            id: subtitles.length + 1,
+            start: startMin * 60 + startSec,
+            end: endMin * 60 + endSec,
+            text: subtitleText
+        });
+    }
+
+    return subtitles;
+};
+
+const parseMillisecondsFormat = (text) => {
+    const subtitles = [];
+    const regexWithMs = /\[\s*(\d+)m(\d+)s(\d+)ms\s*-\s*(\d+)m(\d+)s(\d+)ms\s*\]\s*(.*?)(?=\[\s*\d+m\d+s|\s*$)/gs;
+    let match;
+
+    while ((match = regexWithMs.exec(text)) !== null) {
+        const startMin = parseInt(match[1]);
+        const startSec = parseInt(match[2]);
+        const startMs = parseInt(match[3]);
+        const endMin = parseInt(match[4]);
+        const endSec = parseInt(match[5]);
+        const endMs = parseInt(match[6]);
+
+        const startTime = startMin * 60 + startSec + startMs / 1000;
+        const endTime = endMin * 60 + endSec + endMs / 1000;
+
+        let subtitleText = match[7].trim();
+
+        subtitles.push({
+            id: subtitles.length + 1,
+            start: startTime,
+            end: endTime,
+            text: subtitleText
+        });
+    }
+
+    return subtitles;
+};
+
+const parseSingleTimestampFormat = (text) => {
+    const subtitles = [];
+    const regexSingleTimestamp = /\[(\d+)m(\d+)s\]\s*([^[\n]*?)(?=\n*\[|$)/gs;
+    const matches = [];
+    let match;
+
+    while ((match = regexSingleTimestamp.exec(text)) !== null) {
+        const min = parseInt(match[1]);
+        const sec = parseInt(match[2]);
+        const content = match[3].trim();
+
+        if (content && !content.match(/^\d+\.\d+s$/)) {
+            matches.push({
+                startTime: min * 60 + sec,
+                text: content
+            });
+        }
+    }
+
+    if (matches.length > 0) {
+        matches.forEach((curr, index) => {
+            const next = matches[index + 1];
+            const endTime = next ? next.startTime : curr.startTime + 4;
+
+            subtitles.push({
+                id: subtitles.length + 1,
+                start: curr.startTime,
+                end: endTime,
+                text: curr.text
+            });
+        });
+    }
+
+    return subtitles;
+};
+
+/**
+ * Parse the new bracket format with spaces and optional milliseconds: [ 0m0s000ms - 0m1s500ms ] Text
+ * @param {string} text - The text to parse
+ * @returns {Array} - Array of subtitle objects
+ */
+const parseBracketSpaceFormat = (text) => {
+    const subtitles = [];
+
+    // First try the format with both start and end times including milliseconds
+    const regexWithMs = /\[\s*(\d+)m(\d+)s(?:(\d+)ms)?\s*-\s*(\d+)m(\d+)s(?:(\d+)ms)?\s*\]\s*(.+?)(?=\[|$)/g;
+    let match;
+
+    while ((match = regexWithMs.exec(text)) !== null) {
+        const startMin = parseInt(match[1]);
+        const startSec = parseInt(match[2]);
+        const startMs = match[3] ? parseInt(match[3]) / 1000 : 0;
+        const endMin = parseInt(match[4]);
+        const endSec = parseInt(match[5]);
+        const endMs = match[6] ? parseInt(match[6]) / 1000 : 0;
+        const content = match[7].trim();
+
+        if (content) {
+            subtitles.push({
+                id: subtitles.length + 1,
+                start: startMin * 60 + startSec + startMs,
+                end: endMin * 60 + endSec + endMs,
+                text: content
+            });
+        }
+    }
+
+    // If no matches, try the format without milliseconds
+    if (subtitles.length === 0) {
+        const regexWithoutMs = /\[\s*(\d+)m(\d+)s\s*-\s*(\d+)m(\d+)s\s*\]\s*(.+?)(?=\[\s*\d+m\d+s|$)/gs;
+
+        while ((match = regexWithoutMs.exec(text)) !== null) {
+            const startMin = parseInt(match[1]);
+            const startSec = parseInt(match[2]);
+            const endMin = parseInt(match[3]);
+            const endSec = parseInt(match[4]);
+            const content = match[5].trim();
+
+            if (content) {
+                subtitles.push({
+                    id: subtitles.length + 1,
+                    start: startMin * 60 + startSec,
+                    end: endMin * 60 + endSec,
+                    text: content
+                });
+            }
+        }
+    }
+
+    // If still no matches, try the single timestamp format
+    if (subtitles.length === 0) {
+        const singleTimestampRegex = /\[\s*(\d+)m(\d+)s(?:(\d+)ms)?\s*\]\s*(.+?)(?=\[|$)/g;
+
+        while ((match = singleTimestampRegex.exec(text)) !== null) {
+            const startMin = parseInt(match[1]);
+            const startSec = parseInt(match[2]);
+            const startMs = match[3] ? parseInt(match[3]) / 1000 : 0;
+            const content = match[4].trim();
+
+            const start = startMin * 60 + startSec + startMs;
+
+            // If this is not the first subtitle, set the end time of the previous subtitle
+            if (subtitles.length > 0) {
+                subtitles[subtitles.length - 1].end = start;
+            }
+
+            // For the current subtitle, set the end time to start + 5 seconds (temporary)
+            const end = start + 5;
+
+            if (content) {
+                subtitles.push({
+                    id: subtitles.length + 1,
+                    start: start,
+                    end: end,
+                    text: content
+                });
+            }
+        }
+
+        // Adjust the end time of the last subtitle if needed
+        if (subtitles.length > 0) {
+            const lastSubtitle = subtitles[subtitles.length - 1];
+            if (lastSubtitle.end > lastSubtitle.start + 10) {
+                lastSubtitle.end = lastSubtitle.start + 5; // Limit to 5 seconds if it's too long
+            }
+        }
+    }
+
+    return subtitles;
+};
+
+/**
+ * Parse translated subtitles from Gemini response
+ * @param {string} text - The translated text from Gemini
+ * @returns {Array} - Array of subtitle objects
+ */
+export const parseTranslatedSubtitles = (text) => {
+    // console.log('parseTranslatedSubtitles called with text:', text);
+    // console.log('text type:', typeof text);
+    // console.log('text length:', text ? text.length : 'null');
+    
+    if (!text) {
+        // console.log('parseTranslatedSubtitles: No text provided, returning empty array');
+        return [];
+    }
+
+    // Helper function to convert SRT time format to seconds
+    const srtTimeToSeconds = (srtTime) => {
+        if (!srtTime) return 0;
+        const match = srtTime.match(/(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
+        if (match) {
+            const hours = parseInt(match[1]);
+            const minutes = parseInt(match[2]);
+            const seconds = parseInt(match[3]);
+            const milliseconds = parseInt(match[4]);
+            return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
+        }
+        return 0;
+    };
+
+    // Attempt to parse as JSON first
+    try {
+        // Clean the text - remove any markdown code blocks
+        let cleanedText = text.trim();
+        cleanedText = cleanedText.replace(/^```json\s*/i, '').replace(/```\s*$/i, '');
+        cleanedText = cleanedText.replace(/^```\s*/i, '').replace(/```\s*$/i, '');
+        
+        // console.log('Cleaned text for JSON parsing:', cleanedText);
+        
+        const subtitles = JSON.parse(cleanedText);
+        if (Array.isArray(subtitles)) {
+            // console.log('Successfully parsed as JSON array with', subtitles.length, 'items');
+            // The response is a valid JSON array, so we can return it directly.
+            // Convert startTime/endTime to start/end and handle both string and number formats
+            return subtitles.map((sub, index) => {
+                let start, end;
+                
+                // Handle different time formats
+                if (sub.startTime && sub.endTime) {
+                    // If they're strings (SRT format), convert to seconds
+                    if (typeof sub.startTime === 'string') {
+                        start = srtTimeToSeconds(sub.startTime);
+                    } else {
+                        start = sub.startTime;
+                    }
+                    
+                    if (typeof sub.endTime === 'string') {
+                        end = srtTimeToSeconds(sub.endTime);
+                    } else {
+                        end = sub.endTime;
+                    }
+                } else if (sub.start && sub.end) {
+                    // If they're already in start/end format
+                    start = sub.start;
+                    end = sub.end;
+                } else {
+                    // Fallback to 0
+                    start = 0;
+                    end = 0;
+                }
+
+                return {
+                    id: sub.id || index + 1,
+                    start: start,
+                    end: end,
+                    text: sub.text,
+                    originalId: sub.id || null
+                };
+            });
+        }
+    } catch (e) {
+        console.warn("Could not parse translated subtitles as JSON, trying to fix common issues...", e);
+        // console.log("JSON parsing error details:", e.message);
+        
+        // Try to fix common JSON issues
+        try {
+            let cleanedText = text.trim();
+            cleanedText = cleanedText.replace(/^```json\s*/i, '').replace(/```\s*$/i, '');
+            cleanedText = cleanedText.replace(/^```\s*/i, '').replace(/```\s*$/i, '');
+            
+            // Fix common issues: unescaped quotes, missing commas, etc.
+            cleanedText = cleanedText.replace(/([^\\])"/g, '$1\\"'); // Escape unescaped quotes
+            cleanedText = cleanedText.replace(/,\s*}/g, '}'); // Remove trailing commas
+            cleanedText = cleanedText.replace(/,\s*]/g, ']'); // Remove trailing commas in arrays
+            
+            // console.log('Attempting to parse fixed JSON:', cleanedText);
+            
+            const subtitles = JSON.parse(cleanedText);
+            if (Array.isArray(subtitles)) {
+                // console.log('Successfully parsed fixed JSON array with', subtitles.length, 'items');
+                return subtitles.map((sub, index) => {
+                    let start, end;
+                    
+                    // Handle different time formats
+                    if (sub.startTime && sub.endTime) {
+                        // If they're strings (SRT format), convert to seconds
+                        if (typeof sub.startTime === 'string') {
+                            start = srtTimeToSeconds(sub.startTime);
+                        } else {
+                            start = sub.startTime;
+                        }
+                        
+                        if (typeof sub.endTime === 'string') {
+                            end = srtTimeToSeconds(sub.endTime);
+                        } else {
+                            end = sub.endTime;
+                        }
+                    } else if (sub.start && sub.end) {
+                        // If they're already in start/end format
+                        start = sub.start;
+                        end = sub.end;
+                    } else {
+                        // Fallback to 0
+                        start = 0;
+                        end = 0;
+                    }
+
+                    return {
+                        id: sub.id || index + 1,
+                        start: start,
+                        end: end,
+                        text: sub.text,
+                        originalId: sub.id || null
+                    };
+                });
+            }
+        } catch (fixError) {
+            console.warn("Could not fix JSON, falling back to SRT parsing.", fixError);
+        }
+    }
+
+    const subtitles = [];
+    const lines = text.split('\n');
+    let currentSubtitle = {};
+    let index = 0;
+    let originalId = null;
+
+    while (index < lines.length) {
+        const line = lines[index].trim();
+
+        // Skip empty lines
+        if (!line) {
+            index++;
+            continue;
+        }
+
+        // Check if this is a subtitle number
+        if (/^\d+$/.test(line)) {
+            // If we have a complete subtitle, add it to the list
+            if (currentSubtitle.startTime && currentSubtitle.endTime && currentSubtitle.text) {
+                subtitles.push({
+                    id: subtitles.length + 1,
+                    start: srtTimeToSeconds(currentSubtitle.startTime),
+                    end: srtTimeToSeconds(currentSubtitle.endTime),
+                    text: currentSubtitle.text,
+                    originalId: currentSubtitle.originalId
+                });
+            }
+
+            // Start a new subtitle
+            currentSubtitle = { id: parseInt(line) };
+            originalId = null; // Reset originalId for the new subtitle
+            index++;
+        }
+        // Check if this is a timestamp line
+        else if (line.includes('-->')) {
+            const times = line.split('-->');
+            if (times.length === 2) {
+                currentSubtitle.startTime = times[0].trim();
+                currentSubtitle.endTime = times[1].trim();
+            }
+            index++;
+        }
+        // Check if this is an original ID comment
+        else if (line.startsWith('<!-- original_id:')) {
+            const idMatch = line.match(/<!-- original_id:\s*(\d+)\s*-->/);
+            if (idMatch && idMatch[1]) {
+                currentSubtitle.originalId = parseInt(idMatch[1]);
+            }
+            index++;
+        }
+        // This must be the subtitle text
+        else {
+            // Collect all text lines until we hit an empty line, a number, or an original ID comment
+            let textLines = [];
+            while (index < lines.length &&
+                  lines[index].trim() &&
+                  !/^\d+$/.test(lines[index].trim()) &&
+                  !lines[index].trim().startsWith('<!-- original_id:')) {
+                textLines.push(lines[index].trim());
+                index++;
+            }
+
+            currentSubtitle.text = textLines.join(' ');
+
+            // Check if the next line is an original ID comment
+            if (index < lines.length && lines[index].trim().startsWith('<!-- original_id:')) {
+                const idMatch = lines[index].trim().match(/<!-- original_id:\s*(\d+)\s*-->/);
+                if (idMatch && idMatch[1]) {
+                    currentSubtitle.originalId = parseInt(idMatch[1]);
+                }
+                index++;
+            }
+
+            // If we've reached the end or the next line is a number, add this subtitle
+            if (index >= lines.length || (index < lines.length && /^\d+$/.test(lines[index].trim()))) {
+                if (currentSubtitle.startTime && currentSubtitle.endTime && currentSubtitle.text) {
+                    subtitles.push({
+                        id: subtitles.length + 1,
+                        start: srtTimeToSeconds(currentSubtitle.startTime),
+                        end: srtTimeToSeconds(currentSubtitle.endTime),
+                        text: currentSubtitle.text,
+                        originalId: currentSubtitle.originalId
+                    });
+                }
+                currentSubtitle = {};
+            }
+        }
+    }
+
+    // Add the last subtitle if it exists
+    if (currentSubtitle.startTime && currentSubtitle.endTime && currentSubtitle.text) {
+        subtitles.push({
+            id: subtitles.length + 1,
+            start: srtTimeToSeconds(currentSubtitle.startTime),
+            end: srtTimeToSeconds(currentSubtitle.endTime),
+            text: currentSubtitle.text,
+            originalId: currentSubtitle.originalId
+        });
+    }
+
+    // Try to load the original subtitles map from localStorage
+    try {
+        const originalSubtitlesMapJson = localStorage.getItem('original_subtitles_map');
+        if (originalSubtitlesMapJson) {
+            const originalSubtitlesMap = JSON.parse(originalSubtitlesMapJson);
+
+            // Add a reference to the target language
+            const targetLanguage = localStorage.getItem('translation_target_language');
+            if (targetLanguage) {
+                subtitles.forEach(sub => {
+                    sub.language = targetLanguage;
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error loading original subtitles map:', error);
+    }
+
+    // console.log('parseTranslatedSubtitles returning:', subtitles);
+    // console.log('subtitles length:', subtitles.length);
+    return subtitles;
+};

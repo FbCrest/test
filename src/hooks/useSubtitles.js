@@ -1,0 +1,524 @@
+import { useState, useCallback, useEffect } from 'react';
+import { callGeminiApi, setProcessingForceStopped } from '../services/geminiService';
+import { preloadYouTubeVideo } from '../utils/videoPreloader';
+import { generateFileCacheId, saveSubtitlesToCache, getSubtitlesFromCache } from '../utils/cacheUtils';
+import { extractYoutubeVideoId } from '../utils/videoDownloader';
+import { getVideoDuration, processLongVideo, retrySegmentProcessing } from '../utils/videoProcessor';
+import { getMaxSegmentDurationSeconds } from '../utils/durationUtils';
+
+export const useSubtitles = (t) => {
+    const [subtitlesData, setSubtitlesData] = useState(null);
+    const [status, setStatus] = useState({ message: '', type: '' });
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [retryingSegments, setRetryingSegments] = useState([]);
+
+    // Listen for abort events
+    useEffect(() => {
+        const handleAbort = () => {
+            // Reset generating state
+            setIsGenerating(false);
+            // Reset retrying segments
+            setRetryingSegments([]);
+            // Update status
+            setStatus({ message: t('output.requestsAborted', 'All Gemini requests have been aborted'), type: 'info' });
+        };
+
+        // Add event listener
+        window.addEventListener('gemini-requests-aborted', handleAbort);
+
+        // Clean up
+        return () => {
+            window.removeEventListener('gemini-requests-aborted', handleAbort);
+        };
+    }, [t]);
+
+    // Function to update segment status and dispatch event
+    const updateSegmentsStatus = useCallback((segments) => {
+        // Dispatch custom event with segment status
+        const event = new CustomEvent('segmentStatusUpdate', { detail: segments });
+        window.dispatchEvent(event);
+    }, []);
+
+    const checkCachedSubtitles = async (cacheId) => {
+        try {
+            const response = await fetch(`http://localhost:3004/api/subtitle-exists/${cacheId}`);
+            const data = await response.json();
+            return data.exists ? data.subtitles : null;
+        } catch (error) {
+            console.error('Error checking subtitle cache:', error);
+            return null;
+        }
+    };
+
+    const saveSubtitlesToCache = async (cacheId, subtitles) => {
+        try {
+            const response = await fetch('http://localhost:3004/api/save-subtitles', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cacheId,
+                    subtitles
+                })
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                console.error('Failed to save subtitles to cache:', result.error);
+            }
+        } catch (error) {
+            console.error('Error saving subtitles to cache:', error);
+        }
+    };
+
+    const generateSubtitles = useCallback(async (input, inputType, apiKeysSet) => {
+        if (!apiKeysSet.gemini) {
+            setStatus({ message: t('errors.apiKeyRequired'), type: 'error' });
+            return false;
+        }
+
+        // Reset the force stop flag when starting a new generation
+        setProcessingForceStopped(false);
+
+        setIsGenerating(true);
+        setStatus({ message: t('output.processingVideo'), type: 'loading', progress: 0 });
+        setSubtitlesData(null);
+        
+        // Listen for progress updates
+        const handleProgress = (event) => {
+            const { progress, message } = event.detail;
+            setStatus({ message, type: 'loading', progress });
+        };
+        
+        window.addEventListener('processing-progress', handleProgress);
+
+        try {
+            let cacheId = null;
+
+            if (inputType === 'youtube') {
+                cacheId = extractYoutubeVideoId(input);
+                preloadYouTubeVideo(input);
+            } else if (inputType === 'file-upload') {
+                cacheId = await generateFileCacheId(input);
+
+                // Store the cache ID in localStorage for later use (e.g., saving edited subtitles)
+                localStorage.setItem('current_file_cache_id', cacheId);
+
+                // Check if this is a video file and get its duration
+                if (input.type.startsWith('video/')) {
+                    try {
+                        const duration = await getVideoDuration(input);
+                        const durationMinutes = Math.floor(duration / 60);
+
+                        // If video is longer than 30 minutes, show warning and use special processing
+                        if (durationMinutes > 30) {
+                            setStatus({
+                                message: t('output.longVideoWarning', 'You uploaded a {{duration}} minute video. Processing can be longer than usual due to multiple Gemini calls.', { duration: durationMinutes }),
+                                type: 'loading',
+                                progress: 5
+                            });
+                        }
+                    } catch (error) {
+                        console.warn('Error getting video duration:', error);
+                    }
+                }
+            }
+
+            // Check cache
+            if (cacheId) {
+                const cachedSubtitles = await checkCachedSubtitles(cacheId);
+                if (cachedSubtitles) {
+                    setSubtitlesData(cachedSubtitles);
+                    setStatus({ message: t('output.subtitlesLoadedFromCache'), type: 'success' });
+                    setIsGenerating(false);
+                    return true;
+                }
+            }
+
+            // For file upload, also check if we have cached subtitles in localStorage
+            if (inputType === 'file-upload') {
+                const cachedSubtitles = await getSubtitlesFromCache(cacheId);
+                if (cachedSubtitles) {
+                    setSubtitlesData(cachedSubtitles);
+                    setStatus({ message: t('output.subtitlesLoadedFromCache'), type: 'success' });
+                    setIsGenerating(false);
+                    return true;
+                }
+            }
+
+            // Generate new subtitles
+            let subtitles;
+
+            // Check if this is a long media file (video or audio) that needs special processing
+            if (input.type && (input.type.startsWith('video/') || input.type.startsWith('audio/'))) {
+                try {
+                    setStatus({ message: t('output.processingVideo'), type: 'loading', progress: 10 });
+                    
+                    const duration = await getVideoDuration(input);
+                    const durationMinutes = Math.floor(duration / 60);
+
+                    // Determine if this is a video or audio file
+                    const isAudio = input.type.startsWith('audio/');
+                    const mediaType = isAudio ? 'audio' : 'video';
+
+                    // Debug log to see the media duration
+                    console.log(`${mediaType.charAt(0).toUpperCase() + mediaType.slice(1)} duration: ${duration} seconds, ${durationMinutes} minutes`);
+
+                    // Check file size and reject if too large
+                    const fileSizeMB = input.size / (1024 * 1024);
+                    const maxFileSizeMB = 200; // Set reasonable limit to prevent server overload
+                    
+                    // Priority 1: Check if file is too large
+                    if (fileSizeMB > maxFileSizeMB) {
+                        setStatus({
+                            message: t('errors.fileTooLarge', 'File có dung lượng {{size}}MB quá lớn, cần nén hoặc chia nhỏ video dưới 200MB để tránh quá tải', { 
+                                size: fileSizeMB.toFixed(2)
+                            }),
+                            type: 'error'
+                        });
+                        setIsGenerating(false);
+                        return false;
+                    }
+                    
+                    // Priority 2: Long duration - use segmentation
+                    if (duration > getMaxSegmentDurationSeconds()) {
+                        console.log(`⏱️ Long duration detected: ${durationMinutes} minutes - using segmentation`);
+                        subtitles = await processLongVideo(input, setStatus, t);
+                    } 
+                    // Priority 3: Normal processing for acceptable files
+                    else {
+                        console.log(`✅ Normal processing: ${fileSizeMB.toFixed(1)}MB, ${durationMinutes} minutes`);
+                        subtitles = await callGeminiApi(input, inputType);
+                    }
+                } catch (error) {
+                    console.error('Error checking media duration:', error);
+                    // Fallback to normal processing
+                    setStatus({ message: t('output.processingVideo'), type: 'loading', progress: 50 });
+                    subtitles = await callGeminiApi(input, inputType);
+                }
+            } else {
+                // Normal processing for YouTube
+                setStatus({ message: t('output.processingVideo'), type: 'loading', progress: 50 });
+                subtitles = await callGeminiApi(input, inputType);
+            }
+
+            setSubtitlesData(subtitles);
+
+            // Cache the results
+            if (cacheId && subtitles && subtitles.length > 0) {
+                // Save to server cache
+                await saveSubtitlesToCache(cacheId, subtitles);
+                
+                // Also save to localStorage for file uploads
+                if (inputType === 'file-upload') {
+                    try {
+                        localStorage.setItem(`subtitles_${cacheId}`, JSON.stringify(subtitles));
+                    } catch (error) {
+                        console.warn('Failed to save subtitles to localStorage:', error);
+                    }
+                }
+            }
+
+            // Check if using a strong model (Gemini 2.5 Pro or Gemini 2.0 Flash Thinking)
+            const currentModel = localStorage.getItem('gemini_model') || 'gemini-2.0-flash';
+            const strongModels = ['gemini-2.5-pro-exp-03-25', 'gemini-2.5-flash-preview-05-20'];
+            const isUsingStrongModel = strongModels.includes(currentModel);
+
+            // Show different success message based on model
+            if (isUsingStrongModel && (!subtitles || subtitles.length === 0)) {
+                setStatus({ message: t('output.strongModelSuccess'), type: 'warning', progress: 100 });
+            } else {
+                setStatus({ message: t('output.generationSuccess'), type: 'success', progress: 100 });
+            }
+            return true;
+        } catch (error) {
+            console.error(t('errors.generateSubtitlesFailed', 'Error generating subtitles'), error);
+            try {
+                // Check for specific Gemini API errors
+                if (error.message && (
+                    (error.message.includes('503') && error.message.includes('Service Unavailable')) ||
+                    error.message.includes('The model is overloaded')
+                )) {
+                    setStatus({ message: t('errors.geminiOverloaded'), type: 'error' });
+                } else if (error.message && error.message.includes('token') && error.message.includes('exceeds the maximum')) {
+                    setStatus({ message: t('errors.tokenLimitExceeded'), type: 'error' });
+                } else if (error.message && error.message.includes('File size') && error.message.includes('exceeds the recommended maximum')) {
+                    // Extract file size and max size from error message
+                    const sizeMatch = error.message.match(/(\d+)MB\) exceeds the recommended maximum of (\d+)MB/);
+                    if (sizeMatch && sizeMatch.length >= 3) {
+                        const size = sizeMatch[1];
+                        const maxSize = sizeMatch[2];
+                        setStatus({
+                            message: t('errors.fileSizeTooLarge', 'File size ({{size}}MB) exceeds the recommended maximum of {{maxSize}}MB. Please use a smaller file or lower quality video.', { size, maxSize }),
+                            type: 'error'
+                        });
+                    } else {
+                        setStatus({ message: error.message, type: 'error' });
+                    }
+                } else {
+                    const errorData = JSON.parse(error.message);
+                    if (errorData.type === 'unrecognized_format') {
+                        setStatus({
+                            message: t('errors.unrecognizedSubtitleFormat', 'Không nhận diện được định dạng phụ đề từ AI. Vui lòng thử lại.'),
+                            type: 'error'
+                        });
+                    } else {
+                        setStatus({ message: `Error: ${error.message}`, type: 'error' });
+                    }
+                }
+            } catch {
+                // Check for specific errors
+                if (error.message && (
+                    (error.message.includes('503') && error.message.includes('Service Unavailable')) ||
+                    error.message.includes('The model is overloaded')
+                )) {
+                    setStatus({ message: t('errors.geminiOverloaded'), type: 'error' });
+                } else if (error.message && (
+                    error.message.includes('500') || 
+                    error.message.includes('Internal Server Error') ||
+                    error.message.includes('Server Error')
+                )) {
+                    // Handle 500 errors specifically for large files
+                    const fileSizeMB = input.size ? (input.size / (1024 * 1024)).toFixed(1) : 'unknown';
+                    setStatus({
+                        message: t('errors.serverError500', 'Lỗi server (500) - File quá lớn ({{size}}MB) có thể gây quá tải server. Hãy thử nén video hoặc chia nhỏ file trước khi upload.', { size: fileSizeMB }),
+                        type: 'error'
+                    });
+                } else if (error.message && error.message.includes('token') && error.message.includes('exceeds the maximum')) {
+                    setStatus({ message: t('errors.tokenLimitExceeded'), type: 'error' });
+                } else if (error.message && error.message.includes('File size') && error.message.includes('exceeds the recommended maximum')) {
+                    // Extract file size and max size from error message
+                    const sizeMatch = error.message.match(/(\d+)MB\) exceeds the recommended maximum of (\d+)MB/);
+                    if (sizeMatch && sizeMatch.length >= 3) {
+                        const size = sizeMatch[1];
+                        const maxSize = sizeMatch[2];
+                        setStatus({
+                            message: t('errors.fileSizeTooLarge', 'File size ({{size}}MB) exceeds the recommended maximum of {{maxSize}}MB. Please use a smaller file or lower quality video.', { size, maxSize }),
+                            type: 'error'
+                        });
+                    } else {
+                        setStatus({ message: error.message, type: 'error' });
+                    }
+                } else {
+                    setStatus({ message: `Error: ${error.message}`, type: 'error' });
+                }
+            }
+            return false;
+        } finally {
+            // Clean up event listener
+            window.removeEventListener('processing-progress', handleProgress);
+            
+            // Clean up progress interval if exists
+            if (window.progressInterval) {
+                clearInterval(window.progressInterval);
+                window.progressInterval = null;
+            }
+            
+            setIsGenerating(false);
+        }
+    }, [t]);
+
+    const retryGeneration = useCallback(async (input, inputType, apiKeysSet) => {
+        if (!apiKeysSet.gemini) {
+            setStatus({ message: t('errors.apiKeyRequired'), type: 'error' });
+            return false;
+        }
+
+        // Reset the force stop flag when retrying generation
+        setProcessingForceStopped(false);
+
+        setIsGenerating(true);
+        setStatus({ message: t('output.retryingRequest', 'Đang thử lại yêu cầu đến Gemini. Có thể mất vài phút...'), type: 'loading' });
+
+        try {
+            let subtitles;
+
+            // Check if this is a long media file (video or audio) that needs special processing
+            if (input.type && (input.type.startsWith('video/') || input.type.startsWith('audio/'))) {
+                try {
+                    const duration = await getVideoDuration(input);
+                    const durationMinutes = Math.floor(duration / 60);
+
+                    // Determine if this is a video or audio file
+                    const isAudio = input.type.startsWith('audio/');
+                    const mediaType = isAudio ? 'audio' : 'video';
+
+                    // Debug log to see the media duration
+                    console.log(`${mediaType.charAt(0).toUpperCase() + mediaType.slice(1)} duration: ${duration} seconds, ${durationMinutes} minutes`);
+
+                    // Always use segmentation for media files to match generateSubtitles behavior
+                    // Process long media file by splitting it into segments
+                    subtitles = await processLongVideo(input, setStatus, t);
+                } catch (error) {
+                    console.error('Error checking media duration:', error);
+                    // Fallback to normal processing
+                    subtitles = await callGeminiApi(input, inputType);
+                }
+            } else {
+                // Normal processing for YouTube
+                subtitles = await callGeminiApi(input, inputType);
+            }
+
+            setSubtitlesData(subtitles);
+
+            // Cache the new results
+            if (inputType === 'youtube') {
+                const cacheId = extractYoutubeVideoId(input);
+                if (cacheId && subtitles && subtitles.length > 0) {
+                    await saveSubtitlesToCache(cacheId, subtitles);
+                }
+            } else if (inputType === 'file-upload') {
+                // For file uploads, generate and store the cache ID
+                const cacheId = await generateFileCacheId(input);
+                localStorage.setItem('current_file_cache_id', cacheId);
+
+                if (cacheId && subtitles && subtitles.length > 0) {
+                    await saveSubtitlesToCache(cacheId, subtitles);
+                }
+            }
+
+            // Check if using a strong model (Gemini 2.5 Pro or Gemini 2.0 Flash Thinking)
+            const currentModel = localStorage.getItem('gemini_model') || 'gemini-2.0-flash';
+            const strongModels = ['gemini-2.5-pro-exp-03-25', 'gemini-2.5-flash-preview-05-20'];
+            const isUsingStrongModel = strongModels.includes(currentModel);
+
+            // Show different success message based on model
+            if (isUsingStrongModel && (!subtitles || subtitles.length === 0)) {
+                setStatus({ message: t('output.strongModelSuccess'), type: 'warning' });
+            } else {
+                setStatus({ message: t('output.generationSuccess'), type: 'success' });
+            }
+            return true;
+        } catch (error) {
+            console.error(t('errors.regenerateSubtitlesFailed', 'Error regenerating subtitles'), error);
+
+            // Check for specific Gemini API errors
+            if (error.message && (
+                (error.message.includes('503') && error.message.includes('Service Unavailable')) ||
+                error.message.includes('The model is overloaded')
+            )) {
+                setStatus({ message: t('errors.geminiOverloaded'), type: 'error' });
+            } else if (error.message && error.message.includes('token') && error.message.includes('exceeds the maximum')) {
+                setStatus({ message: t('errors.tokenLimitExceeded'), type: 'error' });
+            } else if (error.message && error.message.includes('File size') && error.message.includes('exceeds the recommended maximum')) {
+                // Extract file size and max size from error message
+                const sizeMatch = error.message.match(/(\d+)MB\) exceeds the recommended maximum of (\d+)MB/);
+                if (sizeMatch && sizeMatch.length >= 3) {
+                    const size = sizeMatch[1];
+                    const maxSize = sizeMatch[2];
+                    setStatus({
+                        message: t('errors.fileSizeTooLarge', 'File size ({{size}}MB) exceeds the recommended maximum of {{maxSize}}MB. Please use a smaller file or lower quality video.', { size, maxSize }),
+                        type: 'error'
+                    });
+                } else {
+                    setStatus({ message: error.message, type: 'error' });
+                }
+            } else {
+                setStatus({ message: `Error: ${error.message}`, type: 'error' });
+            }
+            return false;
+        } finally {
+            setIsGenerating(false);
+        }
+    }, [t]);
+
+    // State to track which segments are currently being retried is defined at the top of the hook
+
+    // Function to retry a specific segment
+    const retrySegment = useCallback(async (segmentIndex, segments) => {
+        // Initialize subtitlesData to empty array if it's null
+        // This happens when using the strong model where we process segments one by one
+        const currentSubtitles = subtitlesData || [];
+
+        // Reset the force stop flag when retrying a segment
+        setProcessingForceStopped(false);
+
+        // Determine if this is a video or audio file based on the segment name
+        // Segment names for audio files typically include 'audio' in the name
+        const isAudio = segments && segments[segmentIndex] &&
+            (segments[segmentIndex].name?.toLowerCase().includes('audio') ||
+             segments[segmentIndex].url?.toLowerCase().includes('audio'));
+        const mediaType = isAudio ? 'audio' : 'video';
+        console.log(`Retrying segment ${segmentIndex} with mediaType: ${mediaType}`);
+
+        // Mark this segment as retrying
+        setRetryingSegments(prev => [...prev, segmentIndex]);
+
+        // Update the segment status to show it's retrying
+        const retryingStatus = {
+            index: segmentIndex,
+            status: 'retrying',
+            message: t('output.retryingSegment', 'Retrying segment...'),
+            shortMessage: t('output.retrying', 'Retrying...')
+        };
+        const event = new CustomEvent('segmentStatusUpdate', { detail: [retryingStatus] });
+        window.dispatchEvent(event);
+
+        try {
+            // Retry processing the specific segment
+            const updatedSubtitles = await retrySegmentProcessing(
+                segmentIndex,
+                segments,
+                currentSubtitles,
+                (status) => {
+                    // Only update the overall status if it's a success message
+                    if (status.type === 'success') {
+                        setStatus(status);
+                    }
+                },
+                t,
+                mediaType
+            );
+
+            // Update the subtitles data with the new results
+            setSubtitlesData(updatedSubtitles);
+
+            // Show a brief success message
+            // Check if we're generating a new segment or retrying an existing one
+            const isGenerating = !subtitlesData || subtitlesData.length === 0;
+            setStatus({
+                message: isGenerating
+                    ? t('output.segmentGenerateSuccess', 'Segment {{segmentNumber}} processed successfully and combined with existing subtitles', { segmentNumber: segmentIndex + 1 })
+                    : t('output.segmentRetrySuccess', 'Segment {{segmentNumber}} reprocessed successfully', { segmentNumber: segmentIndex + 1 }),
+                type: 'success'
+            });
+            return true;
+        } catch (error) {
+            console.error(t('errors.retrySegmentFailed', 'Error retrying segment'), error);
+
+            // Update the segment status to show the error
+            const errorStatus = {
+                index: segmentIndex,
+                status: 'error',
+                message: error.message || t('output.processingFailed', 'Processing failed'),
+                shortMessage: t('output.failed', 'Failed')
+            };
+            const errorEvent = new CustomEvent('segmentStatusUpdate', { detail: [errorStatus] });
+            window.dispatchEvent(errorEvent);
+
+            // Show error message
+            setStatus({
+                message: `${t('errors.segmentRetryFailed', 'Failed to retry segment {{segmentNumber}}', { segmentNumber: segmentIndex + 1 })}: ${error.message}`,
+                type: 'error'
+            });
+            return false;
+        } finally {
+            // Remove this segment from the retrying list
+            setRetryingSegments(prev => prev.filter(idx => idx !== segmentIndex));
+        }
+    }, [subtitlesData, t]);
+
+    return {
+        subtitlesData,
+        setSubtitlesData,
+        status,
+        setStatus,
+        isGenerating,
+        generateSubtitles,
+        retryGeneration,
+        updateSegmentsStatus,
+        retrySegment,
+        retryingSegments
+    };
+};

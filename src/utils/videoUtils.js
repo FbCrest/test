@@ -1,0 +1,334 @@
+/**
+ * Utility functions for video processing and subtitle rendering
+ */
+
+/**
+ * Helper function to draw a rounded rectangle on canvas
+ * @param {CanvasRenderingContext2D} ctx - Canvas context
+ * @param {number} x - X position
+ * @param {number} y - Y position
+ * @param {number} width - Rectangle width
+ * @param {number} height - Rectangle height
+ * @param {number} radius - Corner radius
+ */
+function roundRect(ctx, x, y, width, height, radius) {
+  if (width < 2 * radius) radius = width / 2;
+  if (height < 2 * radius) radius = height / 2;
+
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
+}
+
+/**
+ * Renders subtitles onto a video and returns a downloadable URL
+ * @param {string} videoSrc - Source URL of the video
+ * @param {Array} subtitles - Array of subtitle objects
+ * @param {Object} subtitleSettings - Settings for subtitle appearance
+ * @param {Function} onProgress - Progress callback function
+ * @returns {Promise<string>} - URL of the video with subtitles
+ */
+export const renderSubtitlesToVideo = async (videoSrc, subtitles, subtitleSettings, onProgress = () => {}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      // Create a video element to load the source video
+      const video = document.createElement('video');
+      video.crossOrigin = 'anonymous';
+      video.src = videoSrc;
+
+      // Wait for video metadata to load
+      video.onloadedmetadata = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas dimensions to match video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        // Create a MediaRecorder to capture the canvas
+        let stream = canvas.captureStream();
+        if (video.captureStream) {
+          // Try to get audio track from video element
+          const videoStream = video.captureStream();
+          const audioTracks = videoStream.getAudioTracks();
+          if (audioTracks && audioTracks.length > 0) {
+            audioTracks.forEach(track => {
+              try {
+                stream.addTrack(track);
+              } catch (e) {
+                // Ignore if already added
+              }
+            });
+          }
+        }
+        const mediaRecorder = new MediaRecorder(stream, {
+          mimeType: 'video/webm;codecs=vp9',
+          videoBitsPerSecond: 5000000 // 5 Mbps
+        });
+
+        const chunks = [];
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            chunks.push(e.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(chunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          resolve(url);
+        };
+
+        // Start recording
+        mediaRecorder.start(1000);
+
+        // Parse subtitle settings
+        const {
+          fontFamily = 'Arial, sans-serif',
+          fontSize = '24',
+          fontWeight = '400',
+          position = '0',
+          boxWidth = '80',
+          backgroundColor = '#000000',
+          backgroundOpacity = '0.7',
+          textColor = '#ffffff',
+          textOpacity = '1',
+          textAlign = 'center',
+          textTransform = 'none',
+          lineSpacing = '1.4',
+          letterSpacing = '0',
+          backgroundRadius = '4',
+          backgroundPadding = '10',
+          textShadow = false,
+          textShadowBlur = '0',
+          textShadowColor = '#000000',
+          textStrokeWidth = '0',
+          textStrokeColor = '#000000'
+        } = subtitleSettings || {};
+
+        // Calculate position based on percentage value
+        const getSubtitleY = () => {
+          // Convert position from percentage (0-100) to canvas position
+          return (parseInt(position) / 100) * canvas.height;
+        };
+
+        // Function to draw subtitles on canvas
+        const drawSubtitles = (time) => {
+          // Find current subtitle
+          const currentSubtitles = subtitles.filter(sub => {
+            const start = sub.start !== undefined ? sub.start : parseTimeString(sub.startTime);
+            const end = sub.end !== undefined ? sub.end : parseTimeString(sub.endTime);
+            return time >= start && time <= end;
+          });
+
+          if (currentSubtitles.length > 0) {
+            const text = currentSubtitles[0].text;
+            const boxWidthPx = (canvas.width * parseInt(boxWidth)) / 100;
+            const subtitleY = getSubtitleY();
+
+            // Draw subtitle background
+            ctx.fillStyle = hexToRgba(backgroundColor, backgroundOpacity);
+
+            // Measure text to create appropriate background
+            ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+            ctx.textAlign = 'center';
+
+            // Split text into lines if it's too long
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+              const testLine = currentLine + ' ' + words[i];
+              const metrics = ctx.measureText(testLine);
+              if (metrics.width > boxWidthPx) {
+                lines.push(currentLine);
+                currentLine = words[i];
+              } else {
+                currentLine = testLine;
+              }
+            }
+            lines.push(currentLine);
+
+            // Calculate background height based on number of lines
+            const lineHeight = parseInt(fontSize) * parseFloat(lineSpacing);
+            const paddingValue = parseInt(backgroundPadding);
+            const totalHeight = lineHeight * lines.length + (paddingValue * 2); // Add padding
+
+            // Calculate Y position based on user preference (0=bottom, 100=top)
+            const bgY = ((100 - parseInt(position)) / 100) * (canvas.height - totalHeight);
+            
+            // Draw background with rounded corners if specified
+            const bgX = (canvas.width - boxWidthPx) / 2;
+
+            const radius = parseInt(backgroundRadius);
+            if (radius > 0) {
+              // Draw rounded rectangle for background
+              roundRect(ctx, bgX, bgY, boxWidthPx, totalHeight, radius);
+              ctx.fill();
+            } else {
+              // Draw regular rectangle
+              ctx.fillRect(bgX, bgY, boxWidthPx, totalHeight);
+            }
+
+            // Apply text transform if needed
+            let processedLines = lines;
+            if (textTransform !== 'none') {
+              processedLines = lines.map(line => {
+                if (textTransform === 'uppercase') return line.toUpperCase();
+                if (textTransform === 'lowercase') return line.toLowerCase();
+                if (textTransform === 'capitalize') return line.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                return line;
+              });
+            }
+
+            // Set text alignment
+            let textX = canvas.width / 2; // Default center alignment
+            if (textAlign === 'left') {
+              ctx.textAlign = 'left';
+              textX = bgX + paddingValue;
+            } else if (textAlign === 'right') {
+              ctx.textAlign = 'right';
+              textX = bgX + boxWidthPx - paddingValue;
+            } else {
+              ctx.textAlign = 'center';
+            }
+
+            // Apply letter spacing if needed
+            ctx.letterSpacing = `${letterSpacing}px`;
+
+            // Draw text
+            ctx.fillStyle = hexToRgba(textColor, textOpacity);
+
+            // Apply text shadow if enabled
+            if (parseFloat(textShadowBlur) > 0) {
+              ctx.shadowColor = hexToRgba(textShadowColor, 0.7);
+              ctx.shadowBlur = parseInt(textShadowBlur);
+              ctx.shadowOffsetX = 2;
+              ctx.shadowOffsetY = 2;
+            } else {
+              ctx.shadowColor = 'transparent';
+              ctx.shadowBlur = 0;
+              ctx.shadowOffsetX = 0;
+              ctx.shadowOffsetY = 0;
+            }
+
+            processedLines.forEach((line, index) => {
+              const y = bgY + paddingValue + (index * lineHeight) + parseInt(fontSize) * 0.7; // Adjust for better vertical centering
+              
+              // Apply stroke if enabled
+              if (parseFloat(textStrokeWidth) > 0) {
+                ctx.strokeStyle = textStrokeColor;
+                ctx.lineWidth = parseFloat(textStrokeWidth) * 2; // Canvas lineWidth is centered, so we double it
+                ctx.strokeText(line, textX, y);
+              }
+
+              ctx.fillText(line, textX, y);
+            });
+          }
+        };
+
+        // Function to render each frame
+        const render = () => {
+          if (video.ended || video.paused) {
+            mediaRecorder.stop();
+            return;
+          }
+          // Draw video frame
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          // Draw subtitles
+          drawSubtitles(video.currentTime);
+          // Report progress
+          onProgress(video.currentTime / video.duration);
+          // Request next frame
+          requestAnimationFrame(render);
+        };
+
+        // Start playback and rendering
+        video.play().then(() => {
+          render();
+        }).catch(err => {
+          reject(new Error('Failed to play video: ' + err.message));
+        });
+      };
+
+      video.onerror = () => {
+        reject(new Error('Failed to load video'));
+      };
+
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+/**
+ * Parse time string (00:00:00,000) to seconds
+ * @param {string} timeString - Time string in format 00:00:00,000 or 00m00s000ms
+ * @returns {number} - Time in seconds
+ */
+const parseTimeString = (timeString) => {
+  if (!timeString) return 0;
+
+  // Handle SRT format (00:00:00,000)
+  if (timeString.includes(':')) {
+    const [hours, minutes, secondsMs] = timeString.split(':');
+    const [seconds, ms] = secondsMs.includes(',')
+      ? secondsMs.split(',')
+      : secondsMs.split('.');
+
+    return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds) + parseInt(ms) / 1000;
+  }
+
+  // Handle custom format (00m00s000ms)
+  if (timeString.includes('m') && timeString.includes('s')) {
+    const minutesMatch = timeString.match(/(\d+)m/);
+    const secondsMatch = timeString.match(/(\d+)s/);
+    const msMatch = timeString.match(/(\d+)ms/);
+
+    const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
+    const seconds = secondsMatch ? parseInt(secondsMatch[1]) : 0;
+    const ms = msMatch ? parseInt(msMatch[1]) : 0;
+
+    return minutes * 60 + seconds + ms / 1000;
+  }
+
+  return 0;
+};
+
+/**
+ * Convert hex color to rgba
+ * @param {string} hex - Hex color code
+ * @param {string|number} opacity - Opacity value (0-1)
+ * @returns {string} - RGBA color string
+ */
+const hexToRgba = (hex, opacity) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
+/**
+ * Download a video from a URL
+ * @param {string} url - URL of the video
+ * @param {string} filename - Name of the file to download
+ */
+export const downloadVideo = (url, filename) => {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || 'video-with-subtitles.webm';
+  document.body.appendChild(a);
+  a.click();
+
+  // Clean up
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
+};
