@@ -1,0 +1,615 @@
+/* Header.css */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: var(--background-primary);
+  box-shadow: 0 2px 10px var(--shadow-color);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: header-entrance 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Header entrance animation */
+@keyframes header-entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+    backdrop-filter: blur(0px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Add subtle hover effect to entire header */
+.app-header:hover {
+  box-shadow: 0 4px 20px rgba(103, 80, 164, 0.15);
+}
+
+/* Add animated border gradient */
+.app-header::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      #667eea 20%,
+      #764ba2 40%,
+      #f093fb 60%,
+      #4facfe 80%,
+      transparent 100%);
+  background-size: 200% 100%;
+  animation: border-flow 3s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes border-flow {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  animation: slide-in-left 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Add breathing effect to title container */
+.title-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle,
+      rgba(103, 80, 164, 0.1) 0%,
+      rgba(245, 87, 108, 0.05) 50%,
+      transparent 70%);
+  transform: translate(-50%, -50%) scale(0.8);
+  border-radius: 50%;
+  opacity: 0;
+  animation: breathing-glow 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes breathing-glow {
+
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+
+  50% {
+    transform: translate(-50%, -50%);
+    opacity: 0.3;
+  }
+}
+
+@keyframes slide-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: transparent;
+  background: linear-gradient(45deg,
+      #667eea 0%,
+      #764ba2 15%,
+      #f093fb 30%,
+      #f5576c 45%,
+      #4facfe 60%,
+      #00f2fe 75%,
+      #43e97b 90%,
+      #38f9d7 100%);
+  background-size: 400% 400%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:
+    rainbow-gradient 6s ease-in-out infinite,
+    subtle-glow 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(103, 80, 164, 0.2));
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  letter-spacing: -0.8px;
+  text-rendering: geometricPrecision;
+  user-select: none;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+}
+
+/* Modern Rainbow Gradient Animation */
+@keyframes rainbow-gradient {
+  0% {
+    background-position: 0% 50%;
+    filter: hue-rotate(0deg) saturate(1.2);
+  }
+
+  25% {
+    background-position: 100% 50%;
+    filter: hue-rotate(90deg) saturate(1.4);
+  }
+
+  50% {
+    background-position: 100% 100%;
+    filter: hue-rotate(180deg) saturate(1.6);
+  }
+
+  75% {
+    background-position: 0% 100%;
+    filter: hue-rotate(270deg) saturate(1.4);
+  }
+
+  100% {
+    background-position: 0% 50%;
+    filter: hue-rotate(360deg) saturate(1.2);
+  }
+}
+
+/* Gentle Floating Animation */
+@keyframes gentle-float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  33% {
+    transform: translateY(-3px);
+  }
+
+  66% {
+    transform: translateY(2px);
+  }
+}
+
+/* Subtle Glow Effect */
+@keyframes subtle-glow {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 4px 12px rgba(103, 80, 164, 0.2)) brightness(1);
+  }
+
+  50% {
+    filter: drop-shadow(0 6px 20px rgba(103, 80, 164, 0.4)) brightness(1.1);
+  }
+}
+
+/* Shimmer Effect for Text */
+@keyframes text-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.app-title:hover {
+  filter:
+    drop-shadow(0 6px 20px rgba(103, 80, 164, 0.4)) brightness(1.1);
+  animation-duration: 3s, 1.5s;
+  letter-spacing: -0.6px;
+}
+
+/* Remove shimmer effect - keeping this commented out */
+.app-title::before {
+  display: none;
+}
+
+/* Add subtle particles effect */
+.app-title::after {
+  content: '✨';
+  position: absolute;
+  top: -15px;
+  right: -20px;
+  font-size: 0.8rem;
+  opacity: 0;
+  transform: rotate(0deg);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+}
+
+.app-title:hover::after {
+  opacity: 1;
+  transform: rotate(180deg);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1000;
+  /* Ensure header actions are above other elements */
+  animation: slide-in-right 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
+}
+
+@keyframes slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Staggered animation for header action items */
+.header-actions>* {
+  animation: fade-in-up 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.header-actions>*:nth-child(1) {
+  animation-delay: 0.3s;
+}
+
+.header-actions>*:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.header-actions>*:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Language selector completely removed */
+
+/* Beautiful Theme Toggle - Adaptive */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--theme-toggle-bg, linear-gradient(135deg,
+      rgba(40, 40, 40, 0.8) 0%,
+      rgba(30, 30, 30, 0.9) 100%));
+  backdrop-filter: blur(20px);
+  border: 1px solid transparent;
+  border-radius: 50%;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: var(--text-primary);
+  height: 32px;
+  width: 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--theme-toggle-shadow, 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1));
+}
+
+/* Gradient border for theme toggle */
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  padding: 1px;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.1) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: exclude;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Animated background for theme toggle */
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle,
+      rgba(103, 80, 164, 0.2) 0%,
+      rgba(245, 87, 108, 0.1) 50%,
+      transparent 70%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  border-radius: 50%;
+  transform: scale(0.8);
+}
+
+.theme-toggle:hover::before {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px) rotate(15deg);
+  box-shadow: var(--theme-toggle-hover-shadow,
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2));
+}
+
+.theme-toggle:hover::before {
+  background: linear-gradient(135deg,
+      rgba(129, 140, 248, 0.4) 0%,
+      rgba(99, 102, 241, 0.2) 50%,
+      rgba(168, 85, 247, 0.3) 100%);
+}
+
+.theme-toggle:active {
+  transform: translateY(0) rotate(0deg);
+  box-shadow:
+    0 4px 15px rgba(103, 80, 164, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.theme-toggle svg {
+  stroke: var(--text-primary);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 2;
+  position: relative;
+}
+
+.theme-toggle:hover svg {
+  stroke: var(--primary-color);
+  transform: rotate(180deg);
+}
+
+/* Beautiful Settings Button - Adaptive */
+.settings-button {
+  display: flex;
+  align-items: center;
+  background: var(--settings-button-bg, linear-gradient(135deg,
+      rgba(40, 40, 40, 0.8) 0%,
+      rgba(30, 30, 30, 0.9) 100%));
+  backdrop-filter: blur(20px);
+  border: 1px solid transparent;
+  border-radius: 25px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 500;
+  font-family: 'Inter', 'Roboto', 'Segoe UI', sans-serif;
+  height: 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--settings-button-shadow,
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1));
+}
+
+/* Gradient border for settings button */
+.settings-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 25px;
+  padding: 1px;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.1) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: exclude;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Remove animated background for settings button */
+.settings-button::before {
+  display: none !important;
+}
+
+.settings-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--settings-button-hover-shadow,
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2));
+  color: var(--primary-color);
+}
+
+.settings-button:hover::before {
+  background: linear-gradient(135deg,
+      rgba(129, 140, 248, 0.4) 0%,
+      rgba(99, 102, 241, 0.2) 50%,
+      rgba(168, 85, 247, 0.3) 100%);
+}
+
+.settings-button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 4px 15px rgba(103, 80, 164, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.settings-button svg {
+  margin-right: 6px;
+  stroke: currentColor;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 2;
+  position: relative;
+}
+
+.settings-button:hover svg {
+  stroke: var(--primary-color);
+  transform: rotate(90deg);
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0.5rem 1rem;
+  }
+
+  .app-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .settings-button span {
+    display: none;
+  }
+
+  .settings-button svg {
+    margin-right: 0;
+  }
+
+  .settings-button {
+    padding: 0.5rem;
+    width: 34px;
+    height: 34px;
+    justify-content: center;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+}
+
+/* Additional modern effects for buttons */
+.theme-toggle,
+.settings-button {
+  position: relative;
+}
+
+/* Ripple effect on click */
+.theme-toggle:active::after,
+.settings-button:active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(255, 255, 255, 0.4) 0%,
+      transparent 70%);
+  transform: translate(-50%, -50%);
+  animation: ripple-effect 0.6s ease-out;
+  pointer-events: none;
+  z-index: 3;
+}
+
+@keyframes ripple-effect {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+
+  100% {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+  }
+}
+
+/* Hide default browser focus/outline effects */
+.theme-toggle,
+.theme-toggle *,
+.settings-button,
+.settings-button * {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+  -moz-outline: none !important;
+}
+
+/* Language selector focus styles removed */
+
+/* Custom focus states for accessibility (optional) */
+.theme-toggle:focus-visible,
+.settings-button:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(103, 80, 164, 0.3),
+    0 8px 25px rgba(103, 80, 164, 0.2);
+}
+
+/* Pulse animation for active states */
+.theme-toggle.active,
+.settings-button.active {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
+
+@keyframes gentle-pulse {
+
+  0%,
+  100% {
+    box-shadow:
+      0 4px 15px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  50% {
+    box-shadow:
+      0 6px 20px rgba(103, 80, 164, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Remove all default browser highlights and blue squares */
+* {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

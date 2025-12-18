@@ -1,0 +1,167 @@
+/* SettingsModal.css */
+/* Main file that imports all modular CSS files */
+
+/* Import modular CSS files */
+@import './settings/base.css';
+@import './settings/header-footer.css';
+@import './settings/content-scrollbars.css';
+@import './settings/appearance.css';
+@import './settings/api-key.css';
+@import './settings/video-processing.css';
+@import './settings/prompts.css';
+@import './settings/prompt-presets.css';
+@import './settings/preset-view-modal.css';
+@import './settings/buttons.css';
+@import './settings/tabs.css';
+@import './settings/responsive.css';
+@import './settings/scrollbar-fix.css'; /* Import the scrollbar fix */
+@import './settings/oauth.css'; /* Import OAuth styles */
+@import './settings/translation-language-input.css'; /* Import translation language input styles */
+@import './settings/about.css'; /* Import About tab styles */
+
+/* Gemini Models Tab - Card Grid (reuse onboarding styles) */
+.gemini-models-section .onboarding-models-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+  justify-content: flex-start;
+  margin-top: 25px;
+}
+
+.gemini-models-section .onboarding-model-card {
+  background-color: var(--background-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--md-shape-medium);
+  padding: 16px;
+  cursor: pointer;
+  transition: 
+    box-shadow 0.18s,
+    background 0.18s,
+    color 0.18s,
+    transform 0.16s cubic-bezier(.4,2,.6,1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 0 1 auto;
+  min-width: 280px;
+  max-width: none;
+  box-sizing: border-box;
+}
+.gemini-models-section .onboarding-model-card:hover {
+  transform: scale(1.025);
+  z-index: 1;
+}
+.gemini-models-section .onboarding-model-card.selected {
+  border-color: var(--md-primary);
+  background: linear-gradient(90deg, #2323a3 0%, #6a82fb 100%);
+  color: #fff;
+  box-shadow: 0 0 16px 2px #a259ff80, 0 0 0 2px var(--md-primary-container);
+  transform: scale(1.04);
+  transition: 
+    box-shadow 0.25s cubic-bezier(.4,2,.6,1),
+    background 0.25s,
+    color 0.25s,
+    transform 0.18s cubic-bezier(.4,2,.6,1);
+  z-index: 2;
+}
+.gemini-models-section .onboarding-model-card.selected h3,
+.gemini-models-section .onboarding-model-card.selected .model-badge-premium,
+.gemini-models-section .onboarding-model-card.selected .model-badge-recommend,
+.gemini-models-section .onboarding-model-card.selected .model-badge-stable,
+.gemini-models-section .onboarding-model-card.selected .model-badge-experimental {
+  color: #fff;
+  filter: brightness(1.15);
+}
+.gemini-models-section .onboarding-model-card.selected .model-badge-premium {
+  background: linear-gradient(90deg, #a259ff 0%, #6a82fb 100%);
+  box-shadow: 0 2px 8px #a259ff44;
+}
+.gemini-models-section .onboarding-model-card.selected .model-badge-recommend {
+  background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%) !important;
+  box-shadow: 0 2px 8px #43e97b44;
+  color: #fff !important;
+}
+.gemini-models-section .onboarding-model-card.selected .model-badge-recommend svg {
+  color: #fff !important;
+}
+.gemini-models-section .onboarding-model-card h3 {
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  display: inline-block;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: unset;
+  max-width: none;
+}
+.gemini-models-section .model-description {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.gemini-models-section .onboarding-model-card > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+/* Badge styles (đồng bộ, nhỏ lại, không xuống dòng) */
+.model-badge-premium,
+.model-badge-recommend,
+.model-badge-maintenance,
+.model-badge-stable,
+.model-badge-experimental {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-size: 0.95em;
+  font-weight: 600;
+  margin-left: 8px;
+  white-space: nowrap;
+  min-width: unset;
+  max-width: none;
+  overflow: visible;
+  text-overflow: unset;
+}
+.model-badge-experimental {
+  background: linear-gradient(90deg, #ffb347 0%, #ff7043 100%) !important;
+  color: #fff !important;
+}
+.model-badge-experimental svg {
+  color: #fff !important;
+}
+.model-badge-recommend {
+  background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%) !important;
+  color: #fff !important;
+}
+.model-badge-recommend svg {
+  color: #fff !important;
+}
+.model-badge-stable {
+  background: linear-gradient(90deg, #42a5f5 0%, #478ed1 100%) !important;
+  color: #fff !important;
+}
+.model-badge-stable svg {
+  color: #fff !important;
+}
+
+@media (max-width: 768px) {
+  .gemini-models-section .onboarding-models-grid {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .gemini-models-section .onboarding-model-card {
+    min-width: 0;
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,159 @@
+/* ProgressStatus.css - Material Design 3 progress status component */
+
+.progress-status {
+  padding: 16px;
+  margin: 0;
+  border-radius: var(--md-shape-medium);
+  font-size: var(--md-body-medium-size);
+  line-height: var(--md-body-medium-height);
+  font-weight: var(--md-body-medium-weight);
+  display: flex;
+  align-items: center;
+  animation: fadeIn var(--md-duration-medium2) var(--md-easing-standard);
+  position: relative;
+  background-color: transparent !important;
+}
+
+.progress-status-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.progress-status-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--md-on-surface);
+}
+
+.progress-status-message::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.progress-status-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.progress-status-bar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--md-surface-variant);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-status-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--md-primary) 0%, var(--md-secondary) 100%);
+  border-radius: 4px;
+  transition: width 0.3s var(--md-easing-standard);
+  position: relative;
+}
+
+.progress-status-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-status-percentage {
+  font-size: var(--md-label-medium-size);
+  font-weight: var(--md-label-medium-weight);
+  color: var(--md-on-surface-variant);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Status type variations - removed backgrounds, kept colors */
+.progress-status.loading {
+  color: var(--md-primary);
+}
+
+.progress-status.loading .progress-status-message::before {
+  background-color: var(--md-primary);
+  animation: pulse var(--md-duration-long2) var(--md-easing-standard) infinite;
+}
+
+.progress-status.success {
+  color: var(--success-color);
+}
+
+.progress-status.success .progress-status-message::before {
+  background-color: var(--success-color);
+}
+
+.progress-status.error {
+  color: var(--md-error);
+}
+
+.progress-status.error .progress-status-message::before {
+  background-color: var(--md-error);
+}
+
+.progress-status.warning {
+  color: var(--warning-color);
+}
+
+.progress-status.warning .progress-status-message::before {
+  background-color: var(--warning-color);
+}
+
+.progress-status.info {
+  color: var(--md-primary);
+}
+
+.progress-status.info .progress-status-message::before {
+  background-color: var(--md-primary);
+}
+
+/* Animation for loading state */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .progress-status {
+    padding: 12px;
+  }
+  
+  .progress-status-content {
+    gap: 8px;
+  }
+  
+  .progress-status-bar-container {
+    gap: 8px;
+  }
+  
+  .progress-status-percentage {
+    min-width: 35px;
+    font-size: 12px;
+  }
+} 

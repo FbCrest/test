@@ -1,0 +1,270 @@
+/* Export Modal Styles */
+.export-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.export-modal {
+  background-color: var(--md-surface-1);
+  border-radius: var(--md-shape-large);
+  box-shadow: var(--md-elevation-level3);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  animation: modal-appear 0.3s var(--md-easing-emphasized);
+  border: 1px solid var(--md-outline-variant);
+}
+
+.export-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--md-outline-variant);
+  background-color: var(--md-surface-2);
+}
+
+.export-modal-header h3 {
+  margin: 0;
+  font-size: var(--md-title-medium-size);
+  font-weight: var(--md-title-medium-weight);
+  color: var(--md-on-surface);
+}
+
+.export-modal-close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--md-on-surface-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.export-modal-close-button:hover {
+  background-color: var(--md-surface-3);
+}
+
+.export-modal-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.export-modal-content p {
+  margin: 0;
+  color: var(--md-on-surface);
+  font-size: var(--md-body-medium-size);
+  line-height: var(--md-body-medium-line-height);
+}
+
+.export-modal-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.export-modal-radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: var(--md-shape-medium);
+  background-color: var(--md-surface-2);
+  transition: background-color 0.2s;
+  user-select: none;
+}
+
+.export-modal-radio-option:hover {
+  background-color: var(--md-surface-3);
+}
+
+.export-modal-radio-option input {
+  margin: 0;
+}
+
+.export-modal-radio-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.export-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--md-outline-variant);
+  background-color: var(--md-surface-2);
+}
+
+.export-modal-cancel-button {
+  padding: 8px 16px;
+  background-color: var(--md-surface-2);
+  color: var(--md-on-surface);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--md-shape-medium);
+  font-size: var(--md-body-medium-size);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.export-modal-cancel-button:hover {
+  background-color: var(--md-surface-3);
+}
+
+.export-modal-action-button {
+  padding: 8px 16px;
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  border: none;
+  border-radius: var(--md-shape-medium);
+  font-size: var(--md-body-medium-size);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.export-modal-action-button:hover {
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+}
+
+/* Export button styles */
+.main-action-btn {
+  width: 140px !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 38px !important;
+  padding: 8px 16px;
+  font-size: var(--md-label-large-size);
+  line-height: var(--md-label-large-height);
+  font-weight: var(--md-label-large-weight);
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  border-radius: var(--md-shape-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--md-duration-medium2) var(--md-easing-standard),
+              transform var(--md-duration-medium2) var(--md-easing-emphasized),
+              box-shadow var(--md-duration-medium2) var(--md-easing-standard);
+  box-shadow: var(--md-elevation-level1);
+  position: relative;
+  overflow: hidden;
+}
+
+.export-btn {
+  background-color: var(--md-secondary);
+  color: var(--md-on-secondary);
+}
+
+.download-btn {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+}
+
+.export-btn:hover, .download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md-elevation-level2);
+}
+
+.export-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  transition: background-color var(--md-duration-medium2) var(--md-easing-standard);
+  pointer-events: none;
+  border-radius: var(--md-shape-pill);
+}
+
+.export-btn:hover::before {
+  background-color: rgba(255, 255, 255, var(--md-state-hover-opacity));
+}
+
+.export-btn:active::before {
+  background-color: rgba(255, 255, 255, var(--md-state-pressed-opacity));
+}
+
+.export-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-level1);
+}
+
+.export-btn:disabled {
+  background-color: var(--md-surface-variant);
+  color: var(--md-on-surface-variant);
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.export-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  transition: transform var(--md-duration-medium3) var(--md-easing-emphasized);
+  display: block;
+}
+
+.export-btn:hover svg {
+  transform: translateY(2px);
+}
+
+.export-btn span {
+  display: block;
+  line-height: 1;
+}
+
+.main-action-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  display: block !important;
+}
+
+.main-action-btn span {
+  display: block !important;
+  line-height: 1 !important;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .export-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .export-modal-footer {
+    flex-direction: column;
+  }
+
+  .export-modal-cancel-button,
+  .export-modal-action-button {
+    width: 100%;
+  }
+} 

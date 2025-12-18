@@ -1,0 +1,403 @@
+/* GeminiButtonAnimations.css - Advanced animations for Gemini buttons */
+
+/* Base styles for Gemini icon container - for all Gemini buttons */
+.generate-btn .gemini-icon-container,
+.retry-gemini-btn .gemini-icon-container,
+.force-stop-btn .gemini-icon-container,
+.srt-upload-button .gemini-icon-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 1; /* Increased from 0 to ensure proper stacking context */
+}
+
+/* Gemini mini icons - these will be positioned around the button */
+.gemini-mini-icon {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  pointer-events: none;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+  transition: transform 0.3s var(--md-easing-standard), opacity 0.3s var(--md-easing-standard);
+}
+
+/* Static icons should be visible by default */
+.gemini-mini-icon:not(.dynamic) {
+  opacity: 0.7;
+}
+
+/* Dynamic icons should only be visible when active */
+.gemini-mini-icon.dynamic {
+  opacity: 0;
+  z-index: 2; /* Ensure dynamic icons appear above static ones but below other UI elements */
+}
+
+/* Special styling for different particle types */
+.gemini-mini-icon.pulse {
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+  transition: transform 0.2s var(--md-easing-emphasized), opacity 0.2s var(--md-easing-emphasized);
+}
+
+.gemini-mini-icon.trail {
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+}
+
+.gemini-mini-icon.trail-particle {
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.3));
+  transition: transform 0.1s linear, opacity 0.1s linear;
+}
+
+/* Particle connections for constellation effect */
+.gemini-particle-connection {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.6), transparent);
+  height: 2px;
+  transform-origin: 0 0;
+  transition: opacity 0.3s var(--md-easing-emphasized);
+  z-index: 1;
+  border-radius: 1px;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+}
+
+/* Different sizes for variety */
+.gemini-mini-icon.size-xs { width: 8px; height: 8px; }
+.gemini-mini-icon.size-sm { width: 12px; height: 12px; }
+.gemini-mini-icon.size-md { width: 16px; height: 16px; }
+.gemini-mini-icon.size-lg { width: 20px; height: 20px; }
+
+/* Positioning classes */
+.gemini-mini-icon.top-left { top: 8px; left: 8px; }
+.gemini-mini-icon.top-right { top: 8px; right: 8px; }
+.gemini-mini-icon.bottom-left { bottom: 8px; left: 8px; }
+.gemini-mini-icon.bottom-right { bottom: 8px; right: 8px; }
+.gemini-mini-icon.center-left { top: 50%; left: 8px; transform: translateY(-50%); }
+.gemini-mini-icon.center-right { top: 50%; right: 8px; transform: translateY(-50%); }
+.gemini-mini-icon.center-top { top: 8px; left: 50%; transform: translateX(-50%); }
+.gemini-mini-icon.center-bottom { bottom: 8px; left: 50%; transform: translateX(-50%); }
+
+/* Random positions for more organic feel */
+.gemini-mini-icon.random-1 { top: 15%; left: 12%; }
+.gemini-mini-icon.random-2 { top: 25%; right: 18%; }
+.gemini-mini-icon.random-3 { bottom: 20%; left: 22%; }
+.gemini-mini-icon.random-4 { bottom: 30%; right: 15%; }
+.gemini-mini-icon.random-5 { top: 40%; left: 30%; }
+.gemini-mini-icon.random-6 { top: 60%; right: 25%; }
+
+/* Animation keyframes for the mini icons - expanded with more variations */
+@keyframes float-up {
+  0% { transform: translateY(10px) scale(0.8); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { transform: translateY(-15px) scale(1.2); opacity: 0; }
+}
+
+@keyframes float-down {
+  0% { transform: translateY(-10px) scale(0.8); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { transform: translateY(15px) scale(1.2); opacity: 0; }
+}
+
+@keyframes float-left {
+  0% { transform: translateX(10px) scale(0.8); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { transform: translateX(-15px) scale(1.2); opacity: 0; }
+}
+
+@keyframes float-right {
+  0% { transform: translateX(-10px) scale(0.8); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { transform: translateX(15px) scale(1.2); opacity: 0; }
+}
+
+@keyframes float-diagonal-1 {
+  0% { transform: translate(5px, 5px) scale(0.8); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { transform: translate(-10px, -10px) scale(1.2); opacity: 0; }
+}
+
+@keyframes float-diagonal-2 {
+  0% { transform: translate(-5px, 5px) scale(0.8); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { transform: translate(10px, -10px) scale(1.2); opacity: 0; }
+}
+
+@keyframes float-diagonal-3 {
+  0% { transform: translate(5px, -5px) scale(0.8); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { transform: translate(-10px, 10px) scale(1.2); opacity: 0; }
+}
+
+@keyframes float-diagonal-4 {
+  0% { transform: translate(-5px, -5px) scale(0.8); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { transform: translate(10px, 10px) scale(1.2); opacity: 0; }
+}
+
+@keyframes pulse-fade {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(0.8); opacity: 0; }
+}
+
+@keyframes pulse-fade-rotate {
+  0% { transform: scale(0.8) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 0.7; }
+  100% { transform: scale(0.8) rotate(360deg); opacity: 0; }
+}
+
+@keyframes rotate-fade-cw {
+  0% { transform: rotate(0deg) scale(0.8); opacity: 0; }
+  50% { transform: rotate(180deg) scale(1.2); opacity: 0.7; }
+  100% { transform: rotate(360deg) scale(0.8); opacity: 0; }
+}
+
+@keyframes rotate-fade-ccw {
+  0% { transform: rotate(0deg) scale(0.8); opacity: 0; }
+  50% { transform: rotate(-180deg) scale(1.2); opacity: 0.7; }
+  100% { transform: rotate(-360deg) scale(0.8); opacity: 0; }
+}
+
+@keyframes swing {
+  0% { transform: rotate(0deg); opacity: 0; }
+  25% { transform: rotate(15deg); opacity: 0.7; }
+  50% { transform: rotate(0deg); opacity: 0.8; }
+  75% { transform: rotate(-15deg); opacity: 0.7; }
+  100% { transform: rotate(0deg); opacity: 0; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0; }
+  40% { transform: translateY(-10px) scale(1.1); opacity: 0.7; }
+  60% { transform: translateY(-5px) scale(1.05); opacity: 0.6; }
+  80% { transform: translateY(-8px) scale(1.08); opacity: 0.5; }
+}
+
+/* Idle state animations - subtle and occasional */
+.generate-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon,
+.retry-gemini-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon {
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.generate-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-1,
+.retry-gemini-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-1,
+.srt-upload-button:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-1 {
+  animation-name: pulse-fade;
+  animation-duration: 4s;
+  animation-delay: 0.5s;
+}
+
+.generate-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-2,
+.retry-gemini-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-2 {
+  animation-name: float-up;
+  animation-duration: 5s;
+  animation-delay: 2s;
+}
+
+.generate-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-3,
+.retry-gemini-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-3,
+.srt-upload-button:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-3 {
+  animation-name: rotate-fade;
+  animation-duration: 6s;
+  animation-delay: 1s;
+}
+
+.generate-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-4,
+.retry-gemini-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-4 {
+  animation-name: float-diagonal;
+  animation-duration: 4.5s;
+  animation-delay: 3s;
+}
+
+.generate-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-5,
+.retry-gemini-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-5 {
+  animation-name: pulse-fade;
+  animation-duration: 5.5s;
+  animation-delay: 0.8s;
+}
+
+.generate-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-6,
+.retry-gemini-btn:not(:disabled):not(.processing) .gemini-icon-container .gemini-mini-icon.random-6 {
+  animation-name: float-up;
+  animation-duration: 4.8s;
+  animation-delay: 1.5s;
+}
+
+/* Processing state animations - more active and continuous */
+.generate-btn.processing .gemini-icon-container .gemini-mini-icon,
+.retry-gemini-btn.processing .gemini-icon-container .gemini-mini-icon {
+  animation-iteration-count: infinite;
+  opacity: 0.9; /* Make icons more visible during processing */
+}
+
+/* Special processing state - show all particles */
+.generate-btn.processing .gemini-mini-icon,
+.retry-gemini-btn.processing .gemini-mini-icon {
+  opacity: 0.8 !important;
+  transition: opacity 0.3s var(--md-easing-emphasized);
+}
+
+/* Add glow effect to buttons when processing */
+.generate-btn.processing,
+.retry-gemini-btn.processing,
+.force-stop-btn.processing,
+.srt-upload-button.processing {
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(to right, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+}
+
+.generate-btn.processing::after,
+.retry-gemini-btn.processing::after,
+.force-stop-btn.processing::after,
+.srt-upload-button.processing::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  animation: pulse-glow 2s var(--md-easing-emphasized) infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes pulse-glow {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+.generate-btn.processing .gemini-icon-container .gemini-mini-icon.random-1,
+.retry-gemini-btn.processing .gemini-icon-container .gemini-mini-icon.random-1,
+.srt-upload-button.processing .gemini-icon-container .gemini-mini-icon.random-1 {
+  animation-name: float-up;
+  animation-duration: 1.5s;
+  animation-delay: 0.1s;
+}
+
+.generate-btn.processing .gemini-icon-container .gemini-mini-icon.random-2,
+.retry-gemini-btn.processing .gemini-icon-container .gemini-mini-icon.random-2 {
+  animation-name: rotate-fade;
+  animation-duration: 2s;
+  animation-delay: 0.3s;
+}
+
+.generate-btn.processing .gemini-icon-container .gemini-mini-icon.random-3,
+.retry-gemini-btn.processing .gemini-icon-container .gemini-mini-icon.random-3,
+.srt-upload-button.processing .gemini-icon-container .gemini-mini-icon.random-3 {
+  animation-name: float-diagonal;
+  animation-duration: 1.8s;
+  animation-delay: 0.5s;
+}
+
+.generate-btn.processing .gemini-icon-container .gemini-mini-icon.random-4,
+.retry-gemini-btn.processing .gemini-icon-container .gemini-mini-icon.random-4 {
+  animation-name: pulse-fade;
+  animation-duration: 1.2s;
+  animation-delay: 0.2s;
+}
+
+.generate-btn.processing .gemini-icon-container .gemini-mini-icon.random-5,
+.retry-gemini-btn.processing .gemini-icon-container .gemini-mini-icon.random-5 {
+  animation-name: float-up;
+  animation-duration: 1.7s;
+  animation-delay: 0.4s;
+}
+
+.generate-btn.processing .gemini-icon-container .gemini-mini-icon.random-6,
+.retry-gemini-btn.processing .gemini-icon-container .gemini-mini-icon.random-6 {
+  animation-name: rotate-fade;
+  animation-duration: 1.4s;
+  animation-delay: 0.6s;
+}
+
+/* Hover state enhancements */
+.generate-btn:hover .gemini-icon-container,
+.retry-gemini-btn:hover .gemini-icon-container,
+.srt-upload-button:hover .gemini-icon-container {
+  --cursor-x: 50%;
+  --cursor-y: 50%;
+}
+
+/* Cursor-reactive animations - removed in favor of physics-based interactions */
+/* This is now handled by the JavaScript physics engine */
+
+/* Special animation for the cursor-following icon - removed in favor of physics-based interactions */
+/* This is now handled by the JavaScript physics engine */
+
+/* Different colors for the icons based on button type */
+.generate-btn .gemini-mini-icon {
+  stroke: var(--md-on-primary);
+}
+
+.retry-gemini-btn .gemini-mini-icon {
+  stroke: var(--md-on-tertiary);
+}
+
+.srt-upload-button .gemini-mini-icon {
+  stroke: var(--md-on-secondary);
+}
+
+/* Add gradient effects to the icons */
+.generate-btn .gemini-mini-icon svg path,
+.retry-gemini-btn .gemini-mini-icon svg path,
+.force-stop-btn .gemini-mini-icon svg path,
+.srt-upload-button .gemini-mini-icon svg path {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s var(--md-easing-emphasized);
+}
+
+.generate-btn:hover .gemini-mini-icon svg path,
+.retry-gemini-btn:hover .gemini-mini-icon svg path,
+.force-stop-btn:hover .gemini-mini-icon svg path {
+  stroke-dashoffset: 120;
+  transition: stroke-dashoffset 2s var(--md-easing-emphasized);
+}
+
+/* Processing state special effects */
+.generate-btn.processing .gemini-mini-icon svg path,
+.retry-gemini-btn.processing .gemini-mini-icon svg path,
+.force-stop-btn.processing .gemini-mini-icon svg path {
+  animation: dash-animation 2s var(--md-easing-emphasized) infinite;
+}
+
+@keyframes dash-animation {
+  0% { stroke-dashoffset: 0; }
+  50% { stroke-dashoffset: 120; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* Disabled state - only show animations when processing */
+.generate-btn:disabled:not(.processing) .gemini-icon-container,
+.retry-gemini-btn:disabled:not(.processing) .gemini-icon-container {
+  display: none;
+}
+
+/* Ensure animations work even when button is disabled but processing */
+.generate-btn:disabled.processing .gemini-icon-container,
+.retry-gemini-btn:disabled.processing .gemini-icon-container {
+  display: block;
+  opacity: 0.8; /* Slightly dimmed to indicate disabled state */
+}

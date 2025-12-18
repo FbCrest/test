@@ -1,0 +1,75 @@
+/* inputs.css - Styles for input fields and containers */
+
+.input-methods-container {
+  background-color: var(--background-secondary);
+  border-radius: 48px;
+  box-shadow: var(--md-elevation-level2);
+  padding: 1.5rem 1rem;
+  margin-bottom: 2rem;
+  transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+  animation: slide-in-from-top 0.4s ease-out;
+}
+
+.input-title {
+  margin: 0;
+  padding: 0px 24px;
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  transition: color var(--transition-speed);
+  white-space: nowrap;
+}
+
+.input-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+/* Common styles for all input components */
+.tab-content {
+  padding: 1.5rem 1rem;
+  animation: fade-in 0.3s ease-out;
+  background-color: var(--md-surface-1);
+  border-radius: 48px;
+  margin-top: 1rem;
+  box-shadow: var(--md-elevation-level1);
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner-circle {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.search-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(var(--primary-rgb, 0, 123, 255), 0.3);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Hidden file input */
+.hidden-file-input {
+  opacity: 0;
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  overflow: hidden;
+  z-index: -1;
+}

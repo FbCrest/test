@@ -1,0 +1,14 @@
+/* InputMethods.css - Main file that imports all modular components */
+
+/* Import base styles */
+@import './base/animations.css';
+
+/* Import component styles */
+@import './components/inputs.css';
+@import './components/tabs.css';
+@import './components/buttons.css';
+@import './components/youtube-url.css';
+@import './components/file-upload.css';
+@import './components/youtube-search.css';
+@import './components/error-messages.css';
+@import './components/history-dropdown.css';

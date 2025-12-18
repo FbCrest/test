@@ -1,0 +1,84 @@
+/* SubtitleHideToggle.css - Styling for subtitle hide toggle component */
+
+.subtitle-hide-toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.subtitle-hide-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: var(--md-surface-2);
+  color: var(--text-primary);
+  border: none;
+  border-radius: var(--md-shape-pill);
+  font-size: var(--md-label-medium-size, 0.8rem);
+  font-weight: var(--md-label-medium-weight, 500);
+  cursor: pointer;
+  transition: all 0.2s var(--md-easing-standard);
+  box-shadow: var(--md-elevation-level1);
+  min-height: 32px;
+  justify-content: center;
+}
+
+.subtitle-hide-toggle:hover {
+  background-color: var(--md-surface-3);
+  box-shadow: var(--md-elevation-level2);
+}
+
+.subtitle-hide-toggle:active {
+  transform: scale(0.98);
+  box-shadow: var(--md-elevation-level1);
+}
+
+.subtitle-hide-toggle.visible {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.subtitle-hide-toggle.visible:hover {
+  background-color: #45a049;
+}
+
+.subtitle-hide-toggle.hidden {
+  background-color: #f44336;
+  color: white;
+}
+
+.subtitle-hide-toggle.hidden:hover {
+  background-color: #d32f2f;
+}
+
+.subtitle-hide-toggle svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.subtitle-hide-toggle .toggle-label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .subtitle-hide-toggle {
+    padding: 6px 12px;
+    min-height: 32px;
+    font-size: var(--md-label-medium-size, 0.8rem);
+  }
+  
+  .subtitle-hide-toggle .toggle-label {
+    display: none;
+  }
+  
+  .subtitle-hide-toggle {
+    min-width: auto;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    justify-content: center;
+  }
+} 

@@ -1,0 +1,441 @@
+.translation-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: var(--md-surface-1);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--md-elevation-level1);
+  border: 1px solid var(--border-color);
+}
+
+.translation-header {
+  margin-bottom: 1.5rem;
+}
+
+.translation-header h3 {
+  font-size: 1.3rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+}
+
+.translation-description {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Translation controls container */
+.translation-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Row layout for consistent alignment */
+.translation-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+/* Label column */
+.row-label {
+  flex: 0 0 100px;
+  text-align: right;
+  padding-top: 8px;
+}
+
+.row-label label {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+/* Content column */
+.row-content {
+  flex: 1;
+  min-width: 0; /* Prevent flex items from overflowing */
+}
+
+/* Action content alignment */
+.action-content {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-start;
+}
+
+/* Language input styling */
+.language-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Style for the model dropdown in translation section */
+.translate-model-dropdown {
+  background-color: var(--md-surface-3);
+  border-color: var(--md-outline-variant);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Split duration select styling */
+.split-duration-row {
+  position: relative;
+}
+
+.split-duration-select {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  border-radius: var(--md-shape-pill);
+  border: 1px solid var(--md-outline-variant);
+  background-color: var(--md-surface-1);
+  color: var(--md-on-surface);
+  font-size: var(--md-body-medium-size);
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  cursor: pointer;
+  transition: all var(--md-duration-medium2) var(--md-easing-standard);
+  box-shadow: var(--md-elevation-level1);
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23E6E1E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+  padding-right: 2.5rem;
+}
+
+.split-duration-select:focus {
+  outline: none;
+  border-color: var(--md-primary);
+  box-shadow: var(--md-elevation-level2);
+}
+
+.split-duration-select:hover {
+  border-color: var(--md-primary-container);
+  background-color: color-mix(in srgb, var(--md-surface-1), var(--md-primary) 5%);
+  transform: translateY(-1px);
+  box-shadow: var(--md-elevation-level2);
+}
+
+.split-duration-select option {
+  background-color: var(--md-surface-2);
+  color: var(--md-on-surface);
+  padding: 0.75rem;
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  font-size: var(--md-body-medium-size);
+}
+
+.language-input:focus {
+  outline: none;
+  border-color: var(--md-primary);
+  box-shadow: 0 0 0 2px var(--primary-color-light);
+}
+
+.language-input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.translate-button,
+.download-translation-button,
+.reset-translation-button,
+.download-process-button {
+  padding: 0 1rem; /* Reduced horizontal padding */
+  height: 42px;
+  border-radius: 21px;
+  font-size: 0.9rem; /* Slightly smaller font */
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.translate-button {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  border: none;
+}
+
+.translate-button:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--md-primary), black 10%);
+}
+
+.translate-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.translate-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.translation-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end; /* Align the New Translation button to the right */
+}
+
+.download-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.download-translation-button {
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  border: none;
+}
+
+.download-translation-button:hover {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+}
+
+.download-translation-button.json {
+  background-color: var(--md-tertiary-container, #e8def8);
+  color: var(--md-on-tertiary-container, #1d192b);
+}
+
+.download-translation-button.txt {
+  background-color: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+}
+
+/* Document completion container in translation section */
+.translation-section .document-completion-container {
+  margin-top: 12px;
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Document model dropdown in translation section */
+.translation-section .document-model-dropdown {
+  height: 36px;
+  background-color: var(--md-tertiary-container);
+  color: var(--md-on-tertiary-container);
+}
+
+/* consolidate document button in translation section */
+.translation-section .complete-document-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--md-shape-pill);
+  background-color: var(--md-tertiary);
+  color: var(--md-on-tertiary);
+  font-size: var(--md-label-medium-size);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--md-duration-medium2) var(--md-easing-standard),
+              transform var(--md-duration-medium2) var(--md-easing-emphasized),
+              box-shadow var(--md-duration-medium2) var(--md-easing-standard);
+  box-shadow: var(--md-elevation-level1);
+  position: relative;
+  overflow: hidden;
+  height: 36px;
+  flex-grow: 1;
+}
+
+.translation-section .complete-document-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md-elevation-level2);
+  background-color: var(--md-tertiary-hover);
+}
+
+.translation-section .complete-document-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-level1);
+}
+
+.translation-section .complete-document-btn:disabled {
+  background-color: var(--md-surface-variant);
+  color: var(--md-on-surface-variant);
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.download-translation-button.json:hover {
+  background-color: var(--md-tertiary, #6750a4);
+  color: var(--md-on-tertiary, #ffffff);
+}
+
+.reset-translation-button {
+  background-color: var(--md-surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.reset-translation-button:hover {
+  background-color: var(--md-surface-3);
+}
+
+.download-process-button {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  border: none;
+}
+
+.download-process-button:hover {
+  background-color: color-mix(in srgb, var(--md-primary), black 10%);
+  transform: translateY(-2px);
+  box-shadow: var(--md-elevation-level2);
+}
+
+.translation-error {
+  width: 100%;
+  color: var(--error-color);
+  background-color: var(--error-background);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border-left: 3px solid var(--error-color);
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.translation-preview {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--background-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.translation-preview h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.translation-preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.preview-subtitle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.preview-time {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-family: monospace;
+}
+
+.preview-text {
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.preview-more {
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Help icon and tooltip for split duration */
+.help-icon-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  cursor: help;
+  position: relative;
+  vertical-align: middle;
+}
+
+.help-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--md-on-surface-variant);
+  opacity: 0.7;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.help-icon-container:hover .help-icon {
+  opacity: 1;
+  color: var(--md-primary);
+}
+
+/* Translation status messages */
+.translation-status {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: var(--md-surface-2);
+  border-radius: var(--md-shape-small);
+  font-size: 0.9rem;
+  color: var(--md-on-surface-variant);
+  border-left: 3px solid var(--md-primary);
+  animation: fadeIn var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .translation-section {
+    padding: 1rem;
+  }
+
+  .language-input {
+    flex: 0 1 150px;
+    max-width: 150px;
+  }
+
+  .translate-button,
+  .download-translation-button,
+  .reset-translation-button {
+    padding: 0 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  /* Keep buttons on one line */
+  .translation-actions {
+    gap: 0.5rem;
+  }
+
+  .download-buttons {
+    gap: 0.5rem;
+  }
+}

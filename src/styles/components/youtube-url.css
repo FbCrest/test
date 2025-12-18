@@ -1,0 +1,119 @@
+/* youtube-url.css - Styles for YouTube URL input */
+
+.youtube-url-input {
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.url-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.youtube-icon {
+  position: absolute;
+  left: 20px;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+  z-index: 1;
+}
+
+.youtube-url-field {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 60px;
+  border: 1px solid var(--border-color);
+  border-radius: 30px;
+  font-size: 1rem;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  transition: all 0.2s ease, background-color var(--transition-speed), color var(--transition-speed);
+  box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.youtube-url-field:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-light);
+}
+
+.youtube-url-field.error-input {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 1px var(--error-color-light);
+}
+
+.clear-url-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: color 0.2s ease;
+}
+
+.clear-url-btn:hover {
+  color: var(--md-primary);
+}
+
+.youtube-instructions {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--background-primary);
+  border-radius: 36px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  transition: background-color var(--transition-speed);
+  animation: fade-in 0.5s ease-out;
+}
+
+.youtube-instructions h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  transition: color var(--transition-speed);
+}
+
+.youtube-instructions ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.youtube-instructions li {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  transition: color var(--transition-speed);
+}
+
+.youtube-instructions h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  transition: color var(--transition-speed);
+}
+
+.url-examples {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+  background-color: var(--background-secondary);
+  padding: 1rem 1rem 1rem 2.5rem;
+  border-radius: 6px;
+  transition: background-color var(--transition-speed);
+}
+
+.url-examples li {
+  margin-bottom: 0.3rem;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: color var(--transition-speed);
+}

@@ -1,0 +1,78 @@
+.custom-radio-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 8px;
+  user-select: none;
+  font-size: 0.97rem;
+  position: relative;
+  padding: 6px 8px;
+  border-radius: var(--md-shape-medium);
+  background-color: var(--md-surface-2, #f5f7fa);
+  transition: background-color 0.2s;
+}
+.custom-radio-container:hover {
+  background-color: var(--md-surface-3, #ececec);
+}
+.custom-radio-container input[type="radio"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.custom-radio-circle {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--md-outline-variant, #bbb);
+  border-radius: 50%;
+  background: var(--md-surface-1, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.18s, background 0.18s;
+  box-sizing: border-box;
+  position: relative;
+}
+.custom-radio-container input[type="radio"]:focus + .custom-radio-circle {
+  border-color: var(--md-primary, #4a6cf7);
+  box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.15);
+}
+.custom-radio-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--md-primary, #4a6cf7);
+  border-radius: 50%;
+  display: block;
+  transition: background 0.18s;
+}
+.custom-radio-container input[type="radio"]:checked + .custom-radio-circle {
+  border-color: var(--md-primary, #4a6cf7);
+  background: var(--md-primary-container, #e3e8fd);
+}
+.custom-radio-label {
+  color: var(--md-on-surface, #222);
+  font-size: 0.97rem;
+  font-weight: 500;
+}
+.custom-radio-container.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.custom-radio-container.disabled .custom-radio-label {
+  color: #aaa;
+}
+/* Dark mode */
+[data-theme="dark"] .custom-radio-circle {
+  background: #23232b;
+  border-color: #444;
+}
+[data-theme="dark"] .custom-radio-label {
+  color: #f3f3f3;
+}
+[data-theme="dark"] .custom-radio-dot {
+  background: #90caf9;
+}
+[data-theme="dark"] .custom-radio-container input[type="radio"]:checked + .custom-radio-circle {
+  background: #2a3b6e;
+  border-color: #90caf9;
+} 
