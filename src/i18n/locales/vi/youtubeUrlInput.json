@@ -1,8 +1,0 @@
-{
-  "placeholder": "Nhập URL YouTube (ví dụ: youtube.com/watch?v=...)",
-  "examplesTitle": "Các định dạng URL được hỗ trợ:",
-  "example1": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  "example2": "https://youtu.be/dQw4w9WgXcQ",
-  "example3": "youtube.com/watch?v=dQw4w9WgXcQ",
-  "videoId": "ID Video:"
-}
